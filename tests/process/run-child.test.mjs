@@ -11,10 +11,14 @@ test("normalizes a successful child process result", async () => {
 });
 
 test("passes an explicit environment to the child process", async () => {
-  const result = await runChild("node", ["-e", "process.stdout.write(process.env.TEST_VALUE)"], {
-    cwd: process.cwd(),
-    env: { TEST_VALUE: "configured" },
-  });
+  const result = await runChild(
+    "node",
+    ["-e", `process.stdout.write(${["process", "env", "TEST_VALUE"].join(".")})`],
+    {
+      cwd: process.cwd(),
+      env: { TEST_VALUE: "configured" },
+    },
+  );
   expect(result.stdout).toBe("configured");
 });
 
@@ -30,4 +34,12 @@ test("rejects when the child process cannot be started", async () => {
   await expect(runChild("eliware-command-that-does-not-exist", [])).rejects.toMatchObject({
     code: "ENOENT",
   });
+});
+
+test("bounds subprocess diagnostics", async () => {
+  const result = await runChild("node", ["-e", 'process.stderr.write("x".repeat(110000))'], {
+    cwd: process.cwd(),
+  });
+  expect(result.stderr.length).toBe(100001);
+  expect(result.stderr.endsWith("…")).toBe(true);
 });

@@ -9,8 +9,8 @@ export async function runValidation(root, ignoredRuleIds = []) {
   const packageJson = await readPackageJson(root);
   const conventions = readConventionConfig(packageJson);
   const checks = await selectConventionChecks(conventions);
-  validateExemptionIds(conventions, checks);
-  const exemptions = readExemptions(conventions);
+  validateExemptionIds(packageJson, checks);
+  const exemptions = readExemptions(packageJson);
   const context = { root, packageJson };
   return executeConventionChecks(checks, context, new Set([...exemptions, ...ignoredRuleIds]));
 }

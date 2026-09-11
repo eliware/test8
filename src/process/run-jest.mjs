@@ -2,8 +2,12 @@ import { access } from "node:fs/promises";
 import { extname, join } from "node:path";
 import { runChild } from "./run-child.mjs";
 
+function focusedPathFrom(args) {
+  return args.find((argument) => /^(?:tests?|specs?)[\\/]/.test(argument));
+}
+
 export function buildJestArguments(args) {
-  const focusedPath = args.find((argument) => /^(?:tests?|specs?)\//.test(argument));
+  const focusedPath = focusedPathFrom(args);
   const forwarded = args.filter(
     (argument) =>
       argument !== focusedPath &&
@@ -37,7 +41,15 @@ async function resolveFocusedCoverage(root, focusedPath) {
 }
 
 export async function runJest(root, args = [], execute = runChild) {
-  const focusedPath = args.find((argument) => /^(?:tests?|specs?)\//.test(argument));
+  const focusedPath = focusedPathFrom(args);
+  if (focusedPath) {
+    const normalized = focusedPath.replaceAll("\\", "/").replace(/^\.\//, "");
+    try {
+      await access(join(root, normalized));
+    } catch {
+      throw new Error(`Focused test path does not exist: ${focusedPath}`);
+    }
+  }
   const focusedCoverage = await resolveFocusedCoverage(root, focusedPath);
   const nodeOptions = process.env.NODE_OPTIONS?.includes("--experimental-vm-modules")
     ? process.env.NODE_OPTIONS

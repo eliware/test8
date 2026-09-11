@@ -14,6 +14,42 @@ test("reports help", async () => {
   await expect(runCli(["--help"], (value) => output.push(value))).resolves.toBe(0);
   expect(output[0]).toContain("Usage: eliware-test");
   expect(output[0]).toContain("--debug-timing");
+  expect(output[0]).toContain("--audit");
+  expect(output[0]).toContain("--pack");
+});
+
+test("runs only the requested audit or pack stage", async () => {
+  const calls = [];
+  const audit = async (root, write) => {
+    calls.push(["audit", root]);
+    write("audit output");
+    return 4;
+  };
+  const pack = async (root, write) => {
+    calls.push(["pack", root]);
+    write("pack output");
+    return 5;
+  };
+  const output = [];
+  await expect(
+    runCli(
+      ["--audit"],
+      (value) => output.push(value),
+      "C:/repo",
+      undefined,
+      undefined,
+      audit,
+      pack,
+    ),
+  ).resolves.toBe(4);
+  await expect(
+    runCli(["--pack"], (value) => output.push(value), "C:/repo", undefined, undefined, audit, pack),
+  ).resolves.toBe(5);
+  expect(calls).toEqual([
+    ["audit", "C:/repo"],
+    ["pack", "C:/repo"],
+  ]);
+  expect(output).toEqual(["audit output", "pack output"]);
 });
 
 test("supports lint and formatting command modes", async () => {

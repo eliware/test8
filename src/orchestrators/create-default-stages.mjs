@@ -1,4 +1,5 @@
-import { readFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { runConventionStage } from "./run-convention-stage.mjs";
 import { runValidation } from "./run-validation.mjs";
@@ -11,9 +12,19 @@ import { runChild } from "../process/run-child.mjs";
 import { resolveNpmLauncher } from "../process/resolve-npm-launcher.mjs";
 
 function runPackageCommand(root, execute) {
-  return (name) => {
+  return async (name) => {
     const [command, script] = resolveNpmLauncher();
-    return execute(command, [script, "run", name].filter(Boolean), { cwd: root });
+    const configDirectory = await mkdtemp(join(tmpdir(), "eliware-test-npm-"));
+    const userConfig = join(configDirectory, "npmrc");
+    await writeFile(userConfig, "", "utf8");
+    const env = { ...process.env };
+    delete env.npm_config_allow_scripts;
+    env.npm_config_userconfig = userConfig;
+    try {
+      return await execute(command, [script, "run", name].filter(Boolean), { cwd: root, env });
+    } finally {
+      await rm(configDirectory, { recursive: true, force: true });
+    }
   };
 }
 
@@ -22,10 +33,13 @@ export function createDefaultStages(root, packageJson, { executePackage = runChi
     runConventions: (ignoredRuleIds = []) =>
       runConventionStage(() => runValidation(root, ignoredRuleIds)),
     runTests: (args) => runTestStage(root, args),
-    runCoverage: () =>
+    runCoverage: (startedAt = 0) =>
       runCoverageStage(() =>
         readCoverageSummary({
           readFile: () => readFile(join(root, "coverage", "coverage-summary.json"), "utf8"),
+          stat,
+          reportPath: join(root, "coverage", "coverage-summary.json"),
+          startedAt,
         }),
       ),
     runLint: () => runLintStage(root),

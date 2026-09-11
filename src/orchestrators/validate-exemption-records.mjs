@@ -11,12 +11,16 @@ export function validateExemptionRecords(records) {
         !entry.reason.trim() ||
         typeof entry.approver !== "string" ||
         !entry.approver.trim() ||
-        typeof entry.approvalDate !== "string" ||
-        !isValidDate(entry.approvalDate)
+        (entry.expiry !== null && typeof entry.expiry !== "string") ||
+        (typeof entry.expiry === "string" && !isValidDate(entry.expiry)) ||
+        typeof entry.review !== "string" ||
+        !entry.review.trim()
       );
     })
   ) {
-    throw new Error("Every exemption must identify a ruleId, reason, approver, and approvalDate.");
+    throw new Error(
+      "Every exemption must identify a ruleId, reason, approver, expiry, and review.",
+    );
   }
   const ids = records.map(({ ruleId }) => ruleId);
   if (new Set(ids).size !== ids.length)

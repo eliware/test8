@@ -62,6 +62,7 @@ async function fixture(conventions) {
       scripts: { test: "eliware-test", lint: "eliware-test --lint" },
       eliware: {
         conventions,
+        exempt: conventions.exempt ?? [],
         crosslinks: [
           {
             path: "../docs/authority-map.json",
@@ -134,17 +135,28 @@ test("rejects impossible exemption approval dates", async () => {
   const root = await fixture({
     version: "8.0",
     apply: ["general"],
-    exemptions: [
-      { ruleId: "E-1.0", reason: "fixture", approver: "Eli", approvalDate: "2026-02-31" },
+    exempt: [
+      {
+        ruleId: "E-1.0",
+        reason: "fixture",
+        approver: "Eli",
+        expiry: "2026-02-31",
+        review: "fixture",
+      },
     ],
   });
   await expect(runValidation(root)).rejects.toThrow(/Every exemption/);
 });
-
 test("rejects exemption dates that do not use the required format", () => {
   expect(() =>
     validateExemptionRecords([
-      { ruleId: "E-1.0", reason: "fixture", approver: "Eli", approvalDate: "2026-9-11" },
+      {
+        ruleId: "E-1.0",
+        reason: "fixture",
+        approver: "Eli",
+        expiry: "2026-9-11",
+        review: "fixture",
+      },
     ]),
   ).toThrow(/Every exemption/);
 });

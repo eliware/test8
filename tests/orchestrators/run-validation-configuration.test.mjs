@@ -61,7 +61,8 @@ async function fixture(conventions) {
       dependencies: { jest: "^30.0.0", oxlint: "^1.0.0", prettier: "^3.0.0" },
       scripts: { test: "eliware-test", lint: "eliware-test --lint" },
       eliware: {
-        conventions,
+        conventions: { version: conventions.version, apply: conventions.apply },
+        exempt: conventions.exempt,
         crosslinks: [
           {
             path: "../docs/authority-map.json",
@@ -87,8 +88,8 @@ test("skips only an exact exempted check ID", async () => {
   const root = await fixture({
     version: "8.0",
     apply: ["general"],
-    exemptions: [
-      { ruleId: "E-1.0", reason: "fixture", approver: "Eli", approvalDate: "2026-09-11" },
+    exempt: [
+      { ruleId: "E-1.0", reason: "fixture", approver: "Eli", expiry: null, review: "fixture" },
     ],
   });
   const results = await runValidation(root);

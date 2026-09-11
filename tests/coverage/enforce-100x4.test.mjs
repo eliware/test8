@@ -45,3 +45,38 @@ test("coverage opt-out does not suppress internal evidence failures", async () =
   const root = await mkdtemp(join(tmpdir(), "eliware-test8-coverage-missing-"));
   expect((await runCoverageCommand(root, true)).code).toBe(14);
 });
+
+test("uses the next standard coverage report when the primary is absent", async () => {
+  const root = await mkdtemp(join(tmpdir(), "eliware-test8-coverage-candidate-"));
+  await mkdir(join(root, "coverage"));
+  await writeFile(
+    join(root, "coverage", "coverage.json"),
+    JSON.stringify({
+      total: {
+        statements: { pct: 100 },
+        branches: { pct: 100 },
+        functions: { pct: 100 },
+        lines: { pct: 100 },
+      },
+    }),
+  );
+  expect((await runCoverageCommand(root, false)).code).toBe(0);
+});
+
+test("skips malformed primary evidence when a later report is usable", async () => {
+  const root = await mkdtemp(join(tmpdir(), "eliware-test8-coverage-fallback-"));
+  await mkdir(join(root, "coverage"));
+  await writeFile(join(root, "coverage", "coverage-summary.json"), "not-json");
+  await writeFile(
+    join(root, "coverage", "coverage.json"),
+    JSON.stringify({
+      total: {
+        statements: { pct: 100 },
+        branches: { pct: 100 },
+        functions: { pct: 100 },
+        lines: { pct: 100 },
+      },
+    }),
+  );
+  expect((await runCoverageCommand(root, false)).code).toBe(0);
+});

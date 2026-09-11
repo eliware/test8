@@ -14,13 +14,14 @@ export async function runApplication({
   runPackage,
   createStages = createDefaultStages,
 }) {
+  const startedAt = Date.now();
   const defaults = createStages(root, packageJson);
   return runLifecycle({
     runConventions: () =>
       (runConventions ?? defaults.runConventions)(diagnosticOptions.ignoredRuleIds),
     runTests: () =>
       (runTests ?? ((currentRoot, currentArgs) => defaults.runTests(currentArgs)))(root, args),
-    runCoverage: () => (runCoverage ?? defaults.runCoverage)(),
+    runCoverage: () => (runCoverage ?? defaults.runCoverage)(startedAt),
     runLint: () => (runLint ?? defaults.runLint)(),
     runPackage: () => (runPackage ?? defaults.runPackage)(packageJson, root),
   });

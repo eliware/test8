@@ -7,8 +7,8 @@ export function run({ packageJson }) {
   if (typeof command !== "string" || command.trim() === "") {
     return fail(ruleId, "package.json scripts.test must be a non-empty string.");
   }
-  if (!/\beliware-test\b/.test(command)) {
-    return fail(ruleId, "package.json scripts.test must invoke eliware-test.");
+  if (command.trim() !== "eliware-test") {
+    return fail(ruleId, "package.json scripts.test must be exactly eliware-test.");
   }
   return pass(ruleId);
 }

@@ -17,6 +17,15 @@ test("preserves focused paths and supports the diagnostic concurrency opt-out", 
   ]);
 });
 
+test("recognizes Windows focused test paths", () => {
+  expect(buildJestArguments(["tests\\a.test.mjs"])).toEqual([
+    "--coverage",
+    "--runTestsByPath",
+    "tests\\a.test.mjs",
+    "--runInBand",
+  ]);
+});
+
 test("does not forward wrapper-only diagnostic flags to Jest", () => {
   expect(
     buildJestArguments(["--ignore-100x4", "--ignore-monolith-limits", "--debug-timing"]),
@@ -58,7 +67,9 @@ test("uses default arguments through the execution seam", async () => {
 test("collects only the mirrored source for an unambiguous focused test", async () => {
   const root = await mkdtemp(join(tmpdir(), "eliware-test8-focused-"));
   await mkdir(join(root, "src"));
+  await mkdir(join(root, "tests"));
   await writeFile(join(root, "src", "sample.mjs"), "export {};\n");
+  await writeFile(join(root, "tests", "sample.test.mjs"), 'test("sample", () => {});\n');
   let received;
 
   await runJest(root, ["tests/sample.test.mjs"], async (...args) => {
@@ -78,8 +89,11 @@ test("collects only the mirrored source for an unambiguous focused test", async 
 });
 
 test("keeps broad coverage when a focused test has no mirrored source", async () => {
+  const root = await mkdtemp(join(tmpdir(), "eliware-test8-focused-unmapped-"));
+  await mkdir(join(root, "tests"));
+  await writeFile(join(root, "tests", "helper.test.mjs"), 'test("helper", () => {});\n');
   let received;
-  await runJest("C:/fixture", ["tests/missing.test.mjs"], async (...args) => {
+  await runJest(root, ["tests/helper.test.mjs"], async (...args) => {
     received = args;
     return { code: 0, stdout: "", stderr: "" };
   });
@@ -87,16 +101,30 @@ test("keeps broad coverage when a focused test has no mirrored source", async ()
     "node_modules/jest/bin/jest.js",
     "--coverage",
     "--runTestsByPath",
-    "tests/missing.test.mjs",
+    "tests/helper.test.mjs",
     "--runInBand",
   ]);
 });
 
 test("keeps broad coverage for a non-test focused path", async () => {
+  const root = await mkdtemp(join(tmpdir(), "eliware-test8-focused-helper-"));
+  await mkdir(join(root, "tests"));
+  await writeFile(join(root, "tests", "helper.mjs"), "export {};\n");
   let received;
-  await runJest("C:/fixture", ["tests/helper.mjs"], async (...args) => {
+  await runJest(root, ["tests/helper.mjs"], async (...args) => {
     received = args;
     return { code: 0, stdout: "", stderr: "" };
   });
   expect(received[1]).not.toContain("--collectCoverageFrom");
+});
+
+test("rejects a missing focused test path before invoking Jest", async () => {
+  let invoked = false;
+  await expect(
+    runJest("C:/fixture", ["tests/missing.test.mjs"], async () => {
+      invoked = true;
+      return { code: 0, stdout: "", stderr: "" };
+    }),
+  ).rejects.toThrow(/Focused test path does not exist/);
+  expect(invoked).toBe(false);
 });

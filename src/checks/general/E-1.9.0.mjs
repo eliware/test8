@@ -13,8 +13,8 @@ export function run({ packageJson }) {
   ) {
     return fail(ruleId, "eliware.conventions.apply must be an array of group names.");
   }
-  if (conventions.exemptions !== undefined && !Array.isArray(conventions.exemptions)) {
-    return fail(ruleId, "eliware.conventions.exemptions must be an array when present.");
+  if (Object.hasOwn(conventions, "exemptions")) {
+    return fail(ruleId, "Exemptions must be stored in package.json.eliware.exempt.");
   }
   return pass(ruleId);
 }

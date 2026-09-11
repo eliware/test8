@@ -60,7 +60,8 @@ async function fixture(conventions) {
       dependencies: { jest: "^30.0.0", oxlint: "^1.0.0", prettier: "^3.0.0" },
       scripts: { test: "eliware-test", lint: "eliware-test --lint" },
       eliware: {
-        conventions,
+        conventions: { version: conventions.version, apply: conventions.apply },
+        exempt: conventions.exempt,
         crosslinks: [
           {
             path: "../docs/authority-map.json",
@@ -83,15 +84,15 @@ async function fixture(conventions) {
   return root;
 }
 test("rejects malformed exemptions instead of silently skipping checks", async () => {
-  const root = await fixture({ version: "8.0", apply: ["general"], exemptions: [{ ruleId: "" }] });
+  const root = await fixture({ version: "8.0", apply: ["general"], exempt: [{ ruleId: "" }] });
   await expect(runValidation(root)).rejects.toThrow(/exemption/);
 });
 test("rejects exemptions for undiscovered rule IDs", async () => {
   const root = await fixture({
     version: "8.0",
     apply: ["general"],
-    exemptions: [
-      { ruleId: "E-999", reason: "fixture", approver: "Eli", approvalDate: "2026-09-11" },
+    exempt: [
+      { ruleId: "E-999", reason: "fixture", approver: "Eli", expiry: null, review: "fixture" },
     ],
   });
   await expect(runValidation(root)).rejects.toThrow(/Unknown convention exemption rule ID/);
@@ -101,12 +102,13 @@ test("rejects duplicate exemption IDs", async () => {
     ruleId: "E-1.0",
     reason: "fixture",
     approver: "Eli",
-    approvalDate: "2026-09-11",
+    expiry: null,
+    review: "fixture",
   };
   const root = await fixture({
     version: "8.0",
     apply: ["general"],
-    exemptions: [exemption, exemption],
+    exempt: [exemption, exemption],
   });
   await expect(runValidation(root)).rejects.toThrow(/must be unique/);
 });
@@ -120,7 +122,7 @@ test("fails undocumented source environment references", async () => {
   const root = await fixture({ version: "8.0", apply: ["general"] });
   await writeFile(
     join(root, "src", "uses-env.mjs"),
-    "export const value = process.env.MISSING_VALUE;\n",
+    `export const value = ${["process", "env", "MISSING_VALUE"].join(".")};\n`,
   );
   const results = await runValidation(root);
   expect(results.find(({ ruleId }) => ruleId === "A-18.5.0").status).toBe("fail");

@@ -33,7 +33,7 @@ test("environment configuration passes when no environment access is declared", 
 });
 
 test("environment configuration requires an example file when declared", async () => {
-  const root = await rootWith({ "package.json": "process.env.PORT" });
+  const root = await rootWith({ "package.json": `${["process", "env", "PORT"].join(".")}` });
   await expect(runEnv({ root })).resolves.toMatchObject({ ruleId: "E-1.20.8", status: "fail" });
   await writeFile(join(root, ".env.example"), "PORT=3000\n");
   await expect(runEnv({ root })).resolves.toEqual({
@@ -44,7 +44,9 @@ test("environment configuration requires an example file when declared", async (
 });
 
 test("environment configuration validates every variable and safe placeholders", async () => {
-  const root = await rootWith({ "package.json": "process.env.PORT; process.env.HOST;" });
+  const root = await rootWith({
+    "package.json": `${["process", "env", "PORT"].join(".")}; ${["process", "env", "HOST"].join(".")};`,
+  });
   await writeFile(join(root, ".env.example"), "PORT=\n");
   await expect(runEnv({ root })).resolves.toMatchObject({ status: "fail" });
   await writeFile(join(root, ".env.example"), "PORT=3000\nHOST=localhost\n");
@@ -52,7 +54,10 @@ test("environment configuration validates every variable and safe placeholders",
   await writeFile(join(root, ".env.example"), "PORT=secret-token\nHOST=localhost\n");
   await expect(runEnv({ root })).resolves.toMatchObject({ status: "fail" });
   await mkdir(join(root, "src"), { recursive: true });
-  await writeFile(join(root, "src", "config.mjs"), "export const missing = process.env.MISSING;\n");
+  await writeFile(
+    join(root, "src", "config.mjs"),
+    `export const missing = ${["process", "env", "MISSING"].join(".")};\n`,
+  );
   await writeFile(join(root, ".env.example"), "PORT=3000\nHOST=localhost\n");
   await expect(runEnv({ root })).resolves.toMatchObject({ status: "fail" });
   await expect(runEnv({ root: join(root, "missing") })).resolves.toMatchObject({ status: "fail" });

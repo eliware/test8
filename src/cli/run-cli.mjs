@@ -7,6 +7,8 @@ import { runCoverageCommand } from "./run-coverage-command.mjs";
 import { runFormatCommand } from "./run-format-command.mjs";
 import { readDiagnosticOptions } from "./read-diagnostic-options.mjs";
 import { writeDebugTiming } from "./write-debug-timing.mjs";
+import { runAuditCommand } from "./run-audit-command.mjs";
+import { runPackCommand } from "./run-pack-command.mjs";
 
 export async function runCli(
   args,
@@ -14,6 +16,8 @@ export async function runCli(
   root = process.cwd(),
   application = runApplication,
   runCoverage = runCoverageCommand,
+  runAudit = runAuditCommand,
+  runPack = runPackCommand,
 ) {
   if (args.includes("--version")) {
     write(packageMetadata.version);
@@ -21,14 +25,16 @@ export async function runCli(
   }
   if (args.includes("--help")) {
     write(
-      "Usage: eliware-test [--help|--version|--lint|--format|--format-check|--debug-timing|--ignore-100x4|--ignore-monolith-limits|--no-runInBand]",
+      "Usage: eliware-test [--help|--version|--lint|--audit|--format|--format-check|--pack|--debug-timing|--ignore-100x4|--ignore-monolith-limits|--no-runInBand]",
     );
     return 0;
   }
   try {
     if (args.includes("--lint")) return await runLintCommand(root, write);
+    if (args.includes("--audit")) return await runAudit(root, write);
     if (args.includes("--format")) return await runFormatCommand(root, false);
     if (args.includes("--format-check")) return await runFormatCommand(root, true);
+    if (args.includes("--pack")) return await runPack(root, write);
     const startedAt = Date.now();
     const packageJson = await readPackageJson(root);
     const result = await application({

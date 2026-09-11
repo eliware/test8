@@ -4,7 +4,7 @@ export const ruleId = "E-1.40";
 
 export function run({ packageJson }) {
   const apply = packageJson?.eliware?.conventions?.apply;
-  return Array.isArray(apply) && apply.includes("node")
+  return Array.isArray(apply) && apply.includes("library")
     ? pass(ruleId)
-    : fail(ruleId, "Library repositories must apply the node convention group when using Node.js.");
+    : fail(ruleId, "Library repositories must apply the library convention group.");
 }

@@ -44,6 +44,7 @@
     "lint": "node bin/eliware-test.mjs --lint",
     "format": "node bin/eliware-test.mjs --format",
     "format:check": "node bin/eliware-test.mjs --format-check",
+    "audit": "node bin/run-audit.mjs",
     "pack": "npm pack --dry-run"
   },
   "prettier": {
@@ -92,6 +93,20 @@
       {
         "ruleId": "A-18.0.0",
         "reason": "@eliware/test must self-host its lint command through node bin/eliware-test.mjs because it cannot install itself as its own development dependency.",
+        "approver": "Eli",
+        "expiry": null,
+        "review": "Review when @eliware/test can consume its published eliware-test command without self-hosting."
+      },
+      {
+        "ruleId": "E-1.3",
+        "reason": "@eliware/test must self-host its test command and directly declare Jest, Oxlint, and Prettier because it cannot install itself as its own development dependency and owns the validation stack.",
+        "approver": "Eli",
+        "expiry": null,
+        "review": "Review when @eliware/test can consume its published eliware-test command and validation dependencies without self-hosting."
+      },
+      {
+        "ruleId": "E-1.20.17",
+        "reason": "@eliware/test must self-host its validation scripts because it cannot install and invoke its own published eliware-test package during development.",
         "approver": "Eli",
         "expiry": null,
         "review": "Review when @eliware/test can consume its published eliware-test command without self-hosting."

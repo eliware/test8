@@ -36,5 +36,7 @@ test("runs optional package scripts through the injected child-process seam", as
   );
   await expect(stages.runPackage()).resolves.toMatchObject({ code: 0 });
   expect(received[1].slice(-2)).toEqual(["run", "audit"]);
-  expect(received[2]).toEqual({ cwd: "C:/repo" });
+  expect(received[2].cwd).toBe("C:/repo");
+  expect(received[2].env.npm_config_allow_scripts).toBeUndefined();
+  expect(received[2].env.npm_config_userconfig).toMatch(/npmrc$/);
 });

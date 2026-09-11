@@ -10,16 +10,16 @@ export const ruleId = "E-1.20.8";
 const environmentReference = /process\.env\.([A-Z][A-Z0-9_]*)/g;
 
 export async function run({ root }) {
-  let source;
   try {
-    source = await readFile(join(root, "package.json"), "utf8");
+    await readFile(join(root, "package.json"), "utf8");
   } catch {
     return fail(ruleId, "package.json is required to determine environment configuration.");
   }
-  if (!source.includes("process.env")) return pass(ruleId);
   const sourceFiles = (await walkFiles(root)).filter((file) =>
     /\.(?:mjs|js|cjs|ts|tsx)$/.test(file),
   );
+  const sourceText = await Promise.all(sourceFiles.map((file) => readFile(file, "utf8")));
+  if (!sourceText.some((text) => text.includes("process.env"))) return pass(ruleId);
   const envFile = join(root, ".env.example");
   try {
     await access(envFile);

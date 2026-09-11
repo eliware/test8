@@ -14,6 +14,19 @@ test("runs selected package scripts in order", async () => {
   expect(result.code).toBe(0);
 });
 
+test("runs every supported package stage in the stable order", async () => {
+  const order = [];
+  const result = await runPackageStage(
+    { scripts: { audit: "audit", typecheck: "typecheck", build: "build", pack: "pack" } },
+    async (name) => {
+      order.push(name);
+      return { code: 0, stdout: "", stderr: "" };
+    },
+  );
+  expect(result.code).toBe(0);
+  expect(order).toEqual(["audit", "pack", "build", "typecheck"]);
+});
+
 test("normalizes package-script failures to code 17", async () => {
   const result = await runPackageStage({ scripts: { audit: "audit" } }, async () => ({
     code: 2,

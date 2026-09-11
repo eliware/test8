@@ -4,7 +4,7 @@ export const ruleId = "E-1.50";
 
 export function run({ packageJson }) {
   const apply = packageJson?.eliware?.conventions?.apply;
-  return Array.isArray(apply) && apply.includes("application")
+  return Array.isArray(apply) && apply.includes("web")
     ? pass(ruleId)
-    : fail(ruleId, "Web repositories must also apply the application convention group.");
+    : fail(ruleId, "Web repositories must apply the web convention group.");
 }
