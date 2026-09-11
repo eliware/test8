@@ -93,12 +93,6 @@
           "reason": "@eliware/test must self-host its lint command through node bin/eliware-test.mjs because it cannot install itself as its own development dependency.",
           "approver": "Eli",
           "approvalDate": "2026-09-11"
-        },
-        {
-          "ruleId": "A-18.5.2",
-          "reason": "@eliware/test preserves its existing grouped Jest suites while the v8 check implementation is migrated.",
-          "approver": "Eli",
-          "approvalDate": "2026-09-11"
         }
       ]
     },
