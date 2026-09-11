@@ -1,0 +1,321 @@
+{
+  "version": "8.0",
+  "description": "Eliware Test deterministic validation and enforcement directive.",
+  "authority": {
+    "authoritativeFor": [
+      "Deterministic enforcement of applicable repository conventions.",
+      "Deterministic test, coverage, lint, package-check, and validation behavior."
+    ],
+    "notAuthoritativeFor": [
+      "The conventions being validated.",
+      "Semantic AI review, human acceptance decisions, release authorization, deployment, or operations."
+    ]
+  },
+  "crosslinks": [
+    {
+      "path": "../../docs/authority-map.json",
+      "relation": "relatedAuthority",
+      "authoritativeFor": "Repository authority and the E-18 namespace."
+    },
+    {
+      "path": "../../conventions/specs/*.json",
+      "relation": "relatedAuthority",
+      "authoritativeFor": "Repository conventions enforced by this package."
+    }
+  ],
+  "directives": [
+    {
+      "id": "E-18",
+      "dos": [
+        "Enforce every applicable repository convention that can be validated deterministically, either fully or through its deterministically verifiable requirements.",
+        "Return only pass or fail for each enforced check while preserving distinct process exit codes for distinct failure categories.",
+        "Skip entirely any convention directive that cannot be enforced even partially through deterministic repository, configuration, filesystem, process, or test evidence.",
+        "Store each deterministic check in src/checks/<profile>/<id>.mjs, where the filename identifies the exact convention directive ID.",
+        "Use package.json.eliware.conventions to determine the convention version, applied convention groups, and exact exempted rule IDs.",
+        "Preserve the deterministically enforceable behavior of the previous eliware-test release unless it conflicts with this directive or the v8 conventions.",
+        "Keep the public consumer interface at the eliware-test CLI and keep check modules, orchestrators, diagnostics, and utilities as separate implementation responsibilities."
+      ],
+      "donts": [
+        "Do not infer which convention groups apply from project files, dependencies, entrypoints, or implementation patterns.",
+        "Do not create enforcement modules for requirements that require semantic judgment, owner approval, human acceptance, or live operational evidence.",
+        "Do not use profiles to force repositories into a single project type; apply groups and exemptions must be explicitly declared in package.json.",
+        "Do not silently pass missing, malformed, duplicate, unknown, or unexpectedly skipped checks.",
+        "Do not expose internal check modules as a consumer runtime API.",
+        "Do not weaken an explicit Eliware convention through an inferred exception or an undocumented command-line flag.",
+        "Do not provide project-specific smoke, integration, regression, end-to-end, deployment, release, or live-operational workflows.",
+        "Do not provide coverage merging, coverage backup or restoration, worktree concurrency coordination, comprehensive secret redaction, or a supported runtime-library embedding API."
+      ],
+      "directives": [
+        {
+          "id": "A-18.0",
+          "dos": [
+            "Keep the eliware-test CLI as a thin public entrypoint that delegates validation to focused orchestrators."
+          ],
+          "donts": [
+            "Do not make consumers import internal check, orchestrator, diagnostic, or utility modules."
+          ],
+          "directives": [
+            {
+              "id": "A-18.0.0",
+              "dos": [
+                "Support help and version terminal modes and report the installed package version from package.json.",
+                "Support lint, format, format-check, debug-timing, coverage, focused-test, in-band, and documented enforcement options according to the CLI contract.",
+                "Validate wrapper-owned arguments before starting validation and forward unrelated Jest arguments unchanged."
+              ],
+              "donts": [
+                "Do not require consumers to know internal module paths or structured toolkit seams."
+              ]
+            },
+            {
+              "id": "A-18.0.1",
+              "dos": [
+                "Use Node child-process APIs and argument arrays for subprocess execution.",
+                "Run the validation lifecycle in the documented order: workspace policy, conventions, argument and architecture validation, Jest with coverage, coverage evaluation, lint, monolith enforcement, and configured package checks.",
+                "Run post-test stages after coverage failure so one invocation reports all actionable diagnostics."
+              ],
+              "donts": [
+                "Do not depend on shell pipelines, shell quoting, grep, or platform-specific executable names."
+              ]
+            },
+            {
+              "id": "A-18.0.2",
+              "dos": [
+                "Keep successful output concise and preserve useful test, lint, coverage, and package diagnostics.",
+                "Use stable exit categories for workspace setup, policy, arguments, focused paths, coverage, tests, lint, monoliths, architecture, package scripts, conventions, and internal failures.",
+                "Return the highest applicable post-test failure code after all applicable post-test stages complete."
+              ],
+              "donts": ["Do not expose internal implementation results as a second consumer API."]
+            }
+          ]
+        },
+        {
+          "id": "A-18.1",
+          "dos": [
+            "Read the convention version, applied groups, and exemptions from package.json.eliware.conventions before discovering checks."
+          ],
+          "donts": [
+            "Do not infer applicability from dependencies, files, scripts, entrypoints, or runtime behavior."
+          ],
+          "directives": [
+            {
+              "id": "A-18.1.0",
+              "dos": [
+                "Always evaluate the general check group and evaluate each explicitly applied group once."
+              ],
+              "donts": ["Do not silently ignore an applied group or duplicate a selected check."]
+            },
+            {
+              "id": "A-18.1.1",
+              "dos": [
+                "Skip only exact exempted rule IDs and validate exemption records before execution."
+              ],
+              "donts": [
+                "Do not use broad, implicit, or profile-wide exemptions when an individual rule is intended."
+              ]
+            },
+            {
+              "id": "A-18.1.2",
+              "dos": [
+                "Reject unsupported convention versions, unknown groups, unknown rules, malformed configuration, and duplicate IDs."
+              ],
+              "donts": ["Do not convert configuration errors into a passing result."]
+            }
+          ]
+        },
+        {
+          "id": "A-18.2",
+          "dos": [
+            "Discover checks from src/checks/<profile>/ directories selected by the repository configuration."
+          ],
+          "donts": [
+            "Do not mix check modules with orchestrators, utilities, diagnostics, or other implementation modules."
+          ],
+          "directives": [
+            {
+              "id": "A-18.2.0",
+              "dos": [
+                "Use src/checks/<profile>/<id>.mjs as the canonical location for deterministic convention checks."
+              ],
+              "donts": [
+                "Do not create check modules for requirements that cannot be partially validated deterministically."
+              ]
+            },
+            {
+              "id": "A-18.2.1",
+              "dos": [
+                "Require check filenames, exported IDs, and discovered IDs to match exactly."
+              ],
+              "donts": [
+                "Do not let one module silently represent multiple unrelated directive IDs."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "A-18.3",
+          "dos": [
+            "Give every check one exact convention directive ID and require every result to identify that same ID."
+          ],
+          "donts": [
+            "Do not allow a check to silently cover multiple unrelated directives or return an indeterminate result."
+          ],
+          "directives": [
+            {
+              "id": "A-18.3.0",
+              "dos": [
+                "Return pass or fail with a stable rule ID and actionable diagnostic text.",
+                "Treat statements, branches, functions, and lines as independent coverage requirements.",
+                "Treat zero-valued coverage metrics, malformed coverage evidence, missing usable evidence, and unmapped required files as failures."
+              ],
+              "donts": [
+                "Do not return review, warning, skipped, or unknown as validation outcomes."
+              ]
+            },
+            {
+              "id": "A-18.3.1",
+              "dos": [
+                "Run deterministic checks against a shared repository context and keep filesystem and process inputs bounded.",
+                "Discover source and test trees deterministically, exclude dependency, VCS, coverage, build, distribution, and test-result directories, and fail bounded traversal overflow rather than continuing unbounded discovery.",
+                "Normalize workspace paths, bound child output, deduplicate repeated diagnostics, and keep debug timing in memory."
+              ],
+              "donts": [
+                "Do not make check results depend on hidden mutable state or undocumented inference."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "A-18.4",
+          "dos": [
+            "Aggregate all selected check results and preserve actionable diagnostics while returning a deterministic process result."
+          ],
+          "donts": [
+            "Do not treat an unknown group, missing check, malformed check, or invalid exemption as a successful validation."
+          ],
+          "directives": [
+            {
+              "id": "A-18.4.0",
+              "dos": [
+                "Run Jest in-band by default, support an explicit --no-runInBand diagnostic opt-out, collect coverage, and preserve focused-path behavior.",
+                "Recognize conventional test paths, reject missing paths before Jest, use strict runTestsByPath selection when paths are present, and never fall back silently to the full suite.",
+                "Scope coverage to an unambiguous mirrored source file for focused runs and use broad producer-defined coverage for unmappable runs."
+              ],
+              "donts": [
+                "Do not silently fall back to the full suite when a requested focused path is missing."
+              ]
+            },
+            {
+              "id": "A-18.4.1",
+              "dos": [
+                "Run Oxlint with warnings denied and enforce the existing Istanbul-ignore policy.",
+                "Scan applicable files for Istanbul ignore directives and report executable files hidden by coverage exclusions.",
+                "Preserve the explicit --lint behavior and do not duplicate successful lint output in the integrated pipeline."
+              ],
+              "donts": [
+                "Do not treat warning-level lint findings or executable-code ignore comments as successful validation."
+              ]
+            },
+            {
+              "id": "A-18.4.2",
+              "dos": [
+                "Validate usable JSON and text coverage evidence, fail closed on gaps, and support the explicit 100x4 diagnostic opt-out.",
+                "Use fixed coverage candidate precedence, reject unsafe or structurally inconsistent counters, fall back to the Jest text report when JSON is unusable, and treat fresh malformed evidence as failure.",
+                "Keep --ignore-100x4 limited to enforcement; tests, coverage collection, lint, package checks, and other validation still run."
+              ],
+              "donts": [
+                "Do not let the coverage opt-out skip tests, lint, coverage collection, or other checks."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "A-18.5",
+          "dos": [
+            "Keep deterministic repository checks, test execution, coverage enforcement, linting, package checks, and diagnostics in separately testable modules."
+          ],
+          "donts": [
+            "Do not add a new responsibility to an existing module when a focused module can own it."
+          ],
+          "directives": [
+            {
+              "id": "A-18.5.0",
+              "dos": [
+                "Validate required repository paths, package metadata, documentation indexes, local links, examples, environment templates, and applicable CI metadata.",
+                "Require README.md, AGENTS.md, RELEASE_NOTES.md, docs/, specs/, examples/, and .env.example unless an exact documented path exception applies.",
+                "Validate package identity, Node runtime metadata, scripts, license, README links, specification indexes, example navigation, local Markdown links, safe environment placeholders, and documentation for source-referenced environment variables.",
+                "Require scripts.test to invoke eliware-test unless the repository has an exact approved exemption for its self-hosting arrangement."
+              ],
+              "donts": [
+                "Do not execute examples or treat prose quality as deterministic validation evidence."
+              ]
+            },
+            {
+              "id": "A-18.5.1",
+              "dos": [
+                "Exclude dependency, VCS, coverage, build, distribution, test-result, and other configured generated paths from discovery.",
+                "Warn rather than fail for a missing .gitignore when the convention defines that behavior, while still validating existing policy files.",
+                "Treat generated-file markers as size-policy exemptions only; they do not exempt files from mapping, coverage, or Istanbul policy."
+              ],
+              "donts": [
+                "Do not let exclusions conceal source, test, coverage, or convention failures in included files."
+              ]
+            },
+            {
+              "id": "A-18.5.2",
+              "dos": [
+                "Validate strict src/**/*.mjs to tests/**/*.test.mjs architecture mapping, enforce source files at 100 lines or fewer and test files at 200 lines or fewer, and recognize pure barrels and generated files only under documented rules.",
+                "Keep mapping discovery, focused-path discovery, monolith discovery, and workspace-policy discovery as separate bounded policies."
+              ],
+              "donts": [
+                "Do not treat a size exemption as an exemption from coverage, mapping, or other policy checks."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "A-18.6",
+          "dos": [
+            "Retain deterministic behavior explicitly adopted by v8 while implementing the v8 interface natively."
+          ],
+          "donts": [
+            "Do not add compatibility shims or preserve obsolete interfaces merely because their old implementation is being replaced."
+          ],
+          "directives": [
+            {
+              "id": "A-18.6.0",
+              "dos": [
+                "Run defined audit, pack, build, and typecheck scripts after the core validation stages without invoking the consumer test script recursively.",
+                "Skip absent optional scripts, reject empty or invalid defined scripts, run valid scripts through the supported npm and Node launcher contract, and normalize failures to the package-check category."
+              ],
+              "donts": [
+                "Do not treat a missing npm launcher, invalid script, or nonzero package script as success."
+              ]
+            },
+            {
+              "id": "A-18.6.1",
+              "dos": [
+                "Keep package metadata, lockfiles, README, release notes, packed files, and CI evidence synchronized.",
+                "Verify npm pack contents against the package files allowlist, require the supported CLI bin, and preserve the intentional absence of exports and declaration surfaces when applicable.",
+                "Require Node 26-compatible native ESM package behavior and the shared Jest/Oxlint runtime dependencies."
+              ],
+              "donts": [
+                "Do not publish, tag, push, deploy, or release as an implicit side effect of validation."
+              ]
+            },
+            {
+              "id": "A-18.6.2",
+              "dos": [
+                "Preserve native v8 behavior, self-hosting support, bounded diagnostics, and platform-specific npm launch behavior.",
+                "Keep consumers responsible for specialized smoke, integration, regression, and end-to-end workflows; keep TagIt responsible for release state and CodeScope responsible for semantic review.",
+                "Require explicit authorization outside this package before tagging, publishing, pushing, deploying, synchronizing, or performing destructive actions."
+              ],
+              "donts": [
+                "Do not promise unsupported package managers, runtime layouts, concurrency models, or live operational guarantees."
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

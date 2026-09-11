@@ -1,0 +1,87 @@
+# [![eliware.org](https://eliware.org/logos/brand.png)](https://discord.gg/M6aTR9eTwN)
+
+## @eliware/test [![npm version](https://img.shields.io/npm/v/@eliware/test)](https://www.npmjs.com/package/@eliware/test) [![license](https://img.shields.io/npm/l/@eliware/test)](LICENSE) [![CI](https://github.com/eliware/test/actions/workflows/nodejs.yml/badge.svg)](https://github.com/eliware/test/actions/workflows/nodejs.yml)
+
+## Purpose
+
+`@eliware/test` is the shared deterministic validation CLI for Eliware
+repositories. This repository is the native v8 implementation; it does not
+provide a v7 compatibility layer.
+
+## Requirements
+
+Node.js 26 is required.
+
+## Setup
+
+```text
+npm install
+```
+
+## Usage
+
+```text
+npm test
+npm run lint
+npm run format:check
+eliware-test --help
+eliware-test --version
+eliware-test --ignore-100x4
+eliware-test --ignore-monolith-limits
+eliware-test --debug-timing
+```
+
+The v8 orchestration and convention-check registry are implemented as focused
+native ESM modules under `src/`.
+
+Exit codes identify the failed validation stage: `0` is success, `8` is Jest
+failure, `10` is coverage failure, `12` is lint failure, `14` is an internal
+tool failure, `17` is a package-check failure, and `18` is a convention
+failure. Validation output is intended to preserve actionable diagnostics and
+does not print secrets or arbitrary environment values. The CLI performs no
+deploy, publish, release, or destructive repository operation.
+
+## Configuration
+
+Repository convention applicability is declared in `package.json` under
+`eliware.conventions`. Test-specific directives are documented in
+[specs/directives.json](specs/directives.json).
+
+## Validation
+
+```text
+npm test
+npm run lint
+npm run format:check
+git diff --check
+```
+
+## Navigation
+
+- [Documentation](docs/README.md)
+- [Specifications](specs/README.md)
+- [Examples](examples/README.md)
+- [Release notes](RELEASE_NOTES.md)
+
+## Operations
+
+This package performs local and CI validation only. Release, publication,
+deployment, and other operational changes are controlled by the applicable
+Eliware runbooks and are not performed by `eliware-test`.
+
+## Security
+
+Never commit secrets, credentials, private runtime state, or generated output.
+
+## Support
+
+Use the [Eliware Discord community](https://discord.gg/M6aTR9eTwN),
+[GitHub issues](https://github.com/eliware/test/issues), or
+eliware@eliware.org. Include the command, Node.js version, and redacted
+diagnostics when requesting help.
+
+## License
+
+Licensed under MIT; see [LICENSE](LICENSE).
+
+[Eliware](https://eliware.org) · [GitHub](https://github.com/eliware/test) · [Support](https://discord.gg/M6aTR9eTwN) · [License](LICENSE)
