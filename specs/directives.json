@@ -199,7 +199,7 @@
             {
               "id": "A-18.7.2",
               "dos": [
-                "Expose stable public CLI flags for the universal bundled validation stages and the npm package dry-run stage: --lint, --audit, --format, --format-check, and --pack.",
+                "Expose stable public CLI flags for help, version, the universal bundled validation stages, and the npm package dry-run stage: --help, --version, --lint, --audit, --format, --format-check, and --pack.",
                 "Run only the stage selected by an explicit stage flag, while an invocation without a stage flag runs the applicable aggregate validation pipeline.",
                 "Return the selected stage's stable pass/fail result and diagnostics through the same public CLI contract."
               ],
