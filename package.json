@@ -91,13 +91,6 @@
     },
     "exempt": [
       {
-        "ruleId": "A-18.0.0",
-        "reason": "@eliware/test must self-host its lint command through node bin/eliware-test.mjs because it cannot install itself as its own development dependency.",
-        "approver": "Eli",
-        "expiry": null,
-        "review": "Review when @eliware/test can consume its published eliware-test command without self-hosting."
-      },
-      {
         "ruleId": "E-1.3",
         "reason": "@eliware/test must self-host its test command and directly declare Jest, Oxlint, and Prettier because it cannot install itself as its own development dependency and owns the validation stack.",
         "approver": "Eli",
@@ -127,9 +120,24 @@
         "authoritativeFor": "Cross-repository ownership and platform authority."
       },
       {
-        "path": "../conventions/specs/*.json",
+        "path": "../conventions/specs/general.json",
         "relation": "relatedAuthority",
-        "authoritativeFor": "Eliware conventions enforced by this package."
+        "authoritativeFor": "Universal Eliware conventions enforced by this package."
+      },
+      {
+        "path": "../conventions/specs/application.json",
+        "relation": "relatedAuthority",
+        "authoritativeFor": "Application conventions enforced by this package."
+      },
+      {
+        "path": "../conventions/specs/cli.json",
+        "relation": "relatedAuthority",
+        "authoritativeFor": "CLI conventions enforced by this package."
+      },
+      {
+        "path": "../conventions/specs/npm-published.json",
+        "relation": "relatedAuthority",
+        "authoritativeFor": "npm publication conventions enforced by this package."
       }
     ]
   }
