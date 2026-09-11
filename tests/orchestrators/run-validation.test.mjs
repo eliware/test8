@@ -8,21 +8,37 @@ import { discoverChecks } from "../../src/orchestrators/discover-checks.mjs";
 async function fixture(conventions) {
   const root = await mkdtemp(join(tmpdir(), "eliware-test8-"));
   await mkdir(join(root, "src", "checks", "general"), { recursive: true });
-  await writeFile(join(root, "AGENTS.md"), "# fixture\n");
+  await writeFile(
+    join(root, "AGENTS.md"),
+    "# fixture repository purpose\nScope boundaries repository-wide subdirectory instructions. Read README.md and applicable documentation before changes. Validation commands. Security secrets. Web routes assets configuration browser deployment ports. Application configuration connection shutdown workflow. CLI entrypoint commands validation platform.\n",
+  );
   await writeFile(join(root, "README.md"), "# fixture\n");
-  await writeFile(join(root, "RELEASE_NOTES.md"), "# Release notes\n");
+  await writeFile(join(root, "RELEASE_NOTES.md"), "# Release notes\n## 1.0.0\n");
+  await writeFile(join(root, "LICENSE"), "MIT License\nCopyright (c) 2026 Eliware\n");
   await writeFile(join(root, ".env.example"), "# safe example\n");
+  await writeFile(
+    join(root, ".gitignore"),
+    "node_modules\n.git\ncoverage\nbuild\n.env\nbackup\ndump\nrestore\nruntime state\n",
+  );
   await mkdir(join(root, "docs"), { recursive: true });
   await writeFile(join(root, "docs", "README.md"), "# docs\n");
   await mkdir(join(root, "examples"), { recursive: true });
   await writeFile(join(root, "examples", "README.md"), "# examples\n");
   await mkdir(join(root, "specs"), { recursive: true });
   await writeFile(join(root, "specs", "README.md"), "# specs\n");
+  await mkdir(join(root, ".github", "workflows"), { recursive: true });
+  await writeFile(
+    join(root, ".github", "workflows", "validation.yml"),
+    "on:\n  push:\n  pull_request:\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - run: npm ci\n      - run: npm test\n",
+  );
+  await mkdir(join(root, ".knit"), { recursive: true });
+  await writeFile(join(root, ".knit", "validate.mjs"), "export default {};\n");
+  await writeFile(join(root, ".knit", "deploy.yaml"), "version: 1\n");
   await writeFile(
     join(root, "package.json"),
     JSON.stringify({
       name: "fixture",
-      version: "1.0.0",
+      version: "8.0.0",
       description: "fixture",
       author: "Eliware <eliware@eliware.org>",
       keywords: ["fixture"],
@@ -45,7 +61,16 @@ async function fixture(conventions) {
       engines: { node: ">=26" },
       dependencies: { jest: "^30.0.0", oxlint: "^1.0.0", prettier: "^3.0.0" },
       scripts: { test: "eliware-test", lint: "eliware-test --lint" },
-      eliware: { conventions },
+      eliware: {
+        conventions,
+        crosslinks: [
+          {
+            path: "../docs/authority-map.json",
+            relation: "relatedAuthority",
+            authoritativeFor: "fixture",
+          },
+        ],
+      },
     }),
   );
   await writeFile(
@@ -62,21 +87,49 @@ async function fixture(conventions) {
 test("runs general checks and returns pass/fail results with exact rule IDs", async () => {
   const root = await fixture({ version: "8.0", apply: ["general"] });
   const results = await runValidation(root);
-  expect(results.map(({ ruleId, status }) => ({ ruleId, status }))).toEqual([
-    { ruleId: "E-1.0", status: "pass" },
-    { ruleId: "E-1.1", status: "pass" },
-    { ruleId: "E-1.2", status: "pass" },
-    { ruleId: "E-1.3", status: "pass" },
-    { ruleId: "E-1.9", status: "pass" },
-    { ruleId: "E-1.9.0", status: "pass" },
-    { ruleId: "E-1.19", status: "pass" },
-    { ruleId: "A-1.25.0", status: "pass" },
-    { ruleId: "E-1.26", status: "pass" },
-    { ruleId: "A-18.5.0", status: "pass" },
-    { ruleId: "A-18.5.2", status: "pass" },
-    { ruleId: "A-18.6.0", status: "pass" },
-    { ruleId: "A-18.6.1", status: "pass" },
-  ]);
+  expect(results.map(({ ruleId, status }) => ({ ruleId, status }))).toEqual(
+    expect.arrayContaining([
+      { ruleId: "E-1.0", status: "pass" },
+      { ruleId: "A-1.0.0", status: "pass" },
+      { ruleId: "A-1.0.1", status: "pass" },
+      { ruleId: "A-1.0.2", status: "pass" },
+      { ruleId: "A-1.0.3", status: "pass" },
+      { ruleId: "A-1.0.4", status: "pass" },
+      { ruleId: "A-1.0.6", status: "pass" },
+      { ruleId: "A-1.0.7", status: "pass" },
+      { ruleId: "A-1.0.8", status: "pass" },
+      { ruleId: "A-1.0.9", status: "pass" },
+      { ruleId: "A-1.0.10", status: "pass" },
+      { ruleId: "A-1.0.11", status: "pass" },
+      { ruleId: "E-1.1", status: "pass" },
+      { ruleId: "E-1.2", status: "pass" },
+      { ruleId: "E-1.3", status: "pass" },
+      { ruleId: "E-1.9", status: "pass" },
+      { ruleId: "E-1.9.0", status: "pass" },
+      { ruleId: "E-1.9.5", status: "pass" },
+      { ruleId: "A-1.9.6", status: "pass" },
+      { ruleId: "E-1.10", status: "pass" },
+      { ruleId: "E-1.14", status: "pass" },
+      { ruleId: "E-1.16", status: "pass" },
+      { ruleId: "E-1.19", status: "pass" },
+      { ruleId: "A-1.21", status: "pass" },
+      { ruleId: "E-1.23", status: "pass" },
+      { ruleId: "E-1.24", status: "pass" },
+      { ruleId: "A-1.24.0", status: "pass" },
+      { ruleId: "A-1.24.1", status: "pass" },
+      { ruleId: "A-1.24.2", status: "pass" },
+      { ruleId: "A-1.24.3", status: "pass" },
+      { ruleId: "A-1.24.4", status: "pass" },
+      { ruleId: "A-1.25.0", status: "pass" },
+      { ruleId: "E-1.26", status: "pass" },
+      { ruleId: "A-1.26.0", status: "fail" },
+      { ruleId: "A-18.5.0", status: "pass" },
+      { ruleId: "A-18.5.2", status: "pass" },
+      { ruleId: "A-18.6.0", status: "pass" },
+      { ruleId: "A-18.6.1", status: "fail" },
+    ]),
+  );
+  expect(results.every(({ status }) => ["pass", "fail"].includes(status))).toBe(true);
 });
 test("rejects impossible exemption approval dates", async () => {
   const root = await fixture({

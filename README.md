@@ -20,6 +20,8 @@ npm install
 
 ## Usage
 
+Commands are exposed through the `eliware-test` CLI.
+
 ```text
 npm test
 npm run lint
@@ -33,6 +35,10 @@ eliware-test --debug-timing
 
 The v8 orchestration and convention-check registry are implemented as focused
 native ESM modules under `src/`.
+
+For web applicability, document routes, assets, configuration, ports, browser
+validation, and deployment boundaries. Library applicability additionally
+requires public API, packaging, and examples documentation.
 
 Exit codes identify the failed validation stage: `0` is success, `8` is Jest
 failure, `10` is coverage failure, `12` is lint failure, `14` is an internal

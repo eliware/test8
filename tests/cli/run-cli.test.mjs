@@ -1,4 +1,7 @@
 import { runCli } from "../../src/cli/run-cli.mjs";
+import { mkdtemp, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 test("reports the package version", async () => {
   const output = [];
@@ -70,4 +73,12 @@ test("returns the internal error code when package metadata cannot be read", asy
   ).resolves.toBe(18);
   expect(output).toHaveLength(1);
   expect(output[0]).toMatch(/package\.json|ENOENT/i);
+});
+
+test("fails fast when package.json.eliware is absent", async () => {
+  const root = await mkdtemp(join(tmpdir(), "eliware-test8-no-meta-"));
+  await writeFile(join(root, "package.json"), JSON.stringify({ name: "fixture" }));
+  const output = [];
+  await expect(runCli([], (value) => output.push(value), root)).resolves.toBe(18);
+  expect(output).toEqual(["package.json.eliware is required for Eliware validation."]);
 });

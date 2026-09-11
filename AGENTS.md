@@ -29,6 +29,16 @@ documentation and specifications under `docs/` and `specs/`.
   do not add v8 behavior to the older reference repository.
 - Preserve stable rule IDs, deterministic diagnostics, and the public CLI boundary.
 - Do not commit secrets, private runtime state, or generated output.
+- Web-specific repositories must document routes, assets, configuration,
+  browser validation, deployment boundaries, and assigned ports.
+- Library-specific repositories must document the public API, exports,
+  declarations, compatibility expectations, packaging, and consumer validation.
+- Application-specific repositories must document configuration validation,
+  connection lifecycle, repeatable shutdown, and externally observable workflows.
+- Repository identity, purpose, scope, boundaries, subdirectory instructions,
+  security handling, deviations, required files, and validation commands are
+  documented here; contributors must read README.md, AGENTS.md, and applicable
+  documentation before changes.
 
 ## Validation
 

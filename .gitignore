@@ -1,7 +1,9 @@
 node_modules/
+.git/
 /coverage/
 /public/dist/
 /public/build/
+build/
 .env
 .env.*
 !.env.example
@@ -16,3 +18,7 @@ node_modules/
 Thumbs.db
 .vscode/
 .idea/
+*.bak
+*.dump
+restore/
+runtime-state/

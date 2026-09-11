@@ -89,12 +89,6 @@
       ],
       "exemptions": [
         {
-          "ruleId": "E-1.3",
-          "reason": "@eliware/test must self-host through its local CLI because it cannot install itself as its own development dependency.",
-          "approver": "Eli",
-          "approvalDate": "2026-09-11"
-        },
-        {
           "ruleId": "A-18.0.0",
           "reason": "@eliware/test must self-host its lint command through node bin/eliware-test.mjs because it cannot install itself as its own development dependency.",
           "approver": "Eli",

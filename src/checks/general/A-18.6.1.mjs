@@ -9,11 +9,11 @@ export const ruleId = "A-18.6.1";
 const publishedSurfaces = ["bin", "src", "specs", "docs", "examples"];
 
 export async function run(
-  { root, packageJson },
+  { root, packageJson, executePackage },
   { findPackedFiles = findPackedFileGaps, readLockfile = readRepositoryLockfile } = {},
 ) {
   const missing = [];
-  missing.push(...(await findPackedFiles(root, packageJson)));
+  missing.push(...(await findPackedFiles(root, packageJson, executePackage)));
   missing.push(...findBasicPackageMetadataGaps(packageJson));
   missing.push(...findPublishMetadataGaps(packageJson));
   if (packageJson?.license !== "MIT") missing.push("license: MIT");
