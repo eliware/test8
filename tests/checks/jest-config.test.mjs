@@ -1,5 +1,5 @@
 import { expect, test } from "@jest/globals";
-import { run } from "../../src/checks/node/E-1.20.7.mjs";
+import { run } from "../../src/checks/general/E-1.20.7.mjs";
 
 test("passes when package.json contains Jest configuration", () => {
   expect(run({ packageJson: { jest: { collectCoverage: true } } })).toEqual({

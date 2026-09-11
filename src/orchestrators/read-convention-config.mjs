@@ -6,5 +6,8 @@ export function readConventionConfig(packageJson) {
   if (conventions.version !== "8.0") {
     throw new Error("eliware.conventions.version must be 8.0.");
   }
+  if (conventions.apply.includes("node")) {
+    throw new Error("Unknown convention group: node");
+  }
   return conventions;
 }

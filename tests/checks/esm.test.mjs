@@ -1,6 +1,6 @@
 import { expect, test } from "@jest/globals";
 import { assertCheckResult } from "../../src/checks/check-result.mjs";
-import { run } from "../../src/checks/node/E-1.20.2.mjs";
+import { run } from "../../src/checks/general/E-1.20.2.mjs";
 import { run as runWeb } from "../../src/checks/web/E-1.50.mjs";
 import { run as runWebAgents } from "../../src/checks/web/A-1.50.0.mjs";
 import { run as runWebAgentsDetail } from "../../src/checks/web/A-1.50.0.1.mjs";

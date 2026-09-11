@@ -1,3 +1,6 @@
+import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { expect, test } from "@jest/globals";
 import { buildJestArguments, runJest } from "../../src/process/run-jest.mjs";
 
@@ -50,4 +53,50 @@ test("uses default arguments through the execution seam", async () => {
   expect(received[0]).toBe("node");
   expect(received[1]).toEqual(["node_modules/jest/bin/jest.js", "--coverage", "--runInBand"]);
   expect(received[2].cwd).toBe("C:/fixture");
+});
+
+test("collects only the mirrored source for an unambiguous focused test", async () => {
+  const root = await mkdtemp(join(tmpdir(), "eliware-test8-focused-"));
+  await mkdir(join(root, "src"));
+  await writeFile(join(root, "src", "sample.mjs"), "export {};\n");
+  let received;
+
+  await runJest(root, ["tests/sample.test.mjs"], async (...args) => {
+    received = args;
+    return { code: 0, stdout: "", stderr: "" };
+  });
+
+  expect(received[1]).toEqual([
+    "node_modules/jest/bin/jest.js",
+    "--coverage",
+    "--collectCoverageFrom",
+    "src/sample.mjs",
+    "--runTestsByPath",
+    "tests/sample.test.mjs",
+    "--runInBand",
+  ]);
+});
+
+test("keeps broad coverage when a focused test has no mirrored source", async () => {
+  let received;
+  await runJest("C:/fixture", ["tests/missing.test.mjs"], async (...args) => {
+    received = args;
+    return { code: 0, stdout: "", stderr: "" };
+  });
+  expect(received[1]).toEqual([
+    "node_modules/jest/bin/jest.js",
+    "--coverage",
+    "--runTestsByPath",
+    "tests/missing.test.mjs",
+    "--runInBand",
+  ]);
+});
+
+test("keeps broad coverage for a non-test focused path", async () => {
+  let received;
+  await runJest("C:/fixture", ["tests/helper.mjs"], async (...args) => {
+    received = args;
+    return { code: 0, stdout: "", stderr: "" };
+  });
+  expect(received[1]).not.toContain("--collectCoverageFrom");
 });

@@ -1,5 +1,5 @@
 import { expect, test } from "@jest/globals";
-import { run } from "../../src/checks/node/E-1.20.1.mjs";
+import { run } from "../../src/checks/general/E-1.20.1.mjs";
 
 test("passes when engines.node requires Node 26 or newer", () => {
   expect(run({ packageJson: { engines: { node: ">=26" } } })).toEqual({

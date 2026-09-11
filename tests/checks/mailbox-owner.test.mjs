@@ -34,3 +34,23 @@ test("rejects publishing the mailbox owner through the env template", async () =
     status: "fail",
   });
 });
+
+test("rejects missing identity, local env, and owner assignment", async () => {
+  const root = await fixture("test@eliware.org");
+  await expect(run({ root, packageJson: {} })).resolves.toMatchObject({ status: "fail" });
+  await expect(
+    run({ root: `${root}-missing`, packageJson: { name: "@eliware/test" } }),
+  ).resolves.toMatchObject({ status: "fail" });
+  await writeFile(join(root, ".env"), "PORT=3000\n");
+  await expect(run({ root, packageJson: { name: "@eliware/test" } })).resolves.toMatchObject({
+    status: "fail",
+  });
+});
+
+test("allows a local owner when no template exists", async () => {
+  const root = await mkdtemp(join(tmpdir(), "eliware-test8-mailbox-no-example-"));
+  await writeFile(join(root, ".env"), "MAILBOX_OWNER=test@eliware.org\n");
+  await expect(run({ root, packageJson: { name: "@eliware/test" } })).resolves.toMatchObject({
+    status: "pass",
+  });
+});

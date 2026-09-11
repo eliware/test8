@@ -82,3 +82,44 @@ test("fails fast when package.json.eliware is absent", async () => {
   await expect(runCli([], (value) => output.push(value), root)).resolves.toBe(18);
   expect(output).toEqual(["package.json.eliware is required for Eliware validation."]);
 });
+
+test("forwards diagnostic options and reports every stage", async () => {
+  const output = [];
+  let received;
+  const application = async (options) => {
+    received = options;
+    return {
+      code: 3,
+      results: [
+        { category: "lint", code: 3, output: "lint failed" },
+        { category: "tests", code: 0, output: "" },
+      ],
+    };
+  };
+  await expect(
+    runCli(
+      ["--no-runInBand", "--ignore-monolith-limits"],
+      (value) => output.push(value),
+      process.cwd(),
+      application,
+    ),
+  ).resolves.toBe(3);
+  expect(received.args).toEqual(["--no-runInBand", "--ignore-monolith-limits"]);
+  expect(received.diagnosticOptions).toEqual({ ignoredRuleIds: ["A-18.5.2"] });
+  expect(output).toContain("lint failed");
+});
+
+test("returns the internal error code for application failures", async () => {
+  const output = [];
+  await expect(
+    runCli(
+      [],
+      (value) => output.push(value),
+      process.cwd(),
+      async () => {
+        throw new Error("application failed");
+      },
+    ),
+  ).resolves.toBe(18);
+  expect(output).toEqual(["application failed"]);
+});

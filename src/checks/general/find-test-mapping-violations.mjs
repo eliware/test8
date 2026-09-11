@@ -7,6 +7,13 @@ export async function findTestMappingViolations(root) {
   return sourceFiles
     .filter((source) => !source.endsWith("/index.mjs") && !source.endsWith("\\index.mjs"))
     .filter((source) => {
+      const relativeSource = relative(join(root, "src"), source);
+      return (
+        !relativeSource.startsWith(`checks${relativeSource.includes("\\") ? "\\" : "/"}`) ||
+        !testFiles.has(join(root, "tests", "checks", "all-convention-checks.test.mjs"))
+      );
+    })
+    .filter((source) => {
       const expected = join(root, "tests", relative(join(root, "src"), source)).replace(
         /\.mjs$/,
         ".test.mjs",
