@@ -12,9 +12,7 @@
   "directives": [
     {
       "id": "E-18",
-      "dos": [
-        "Provide a deterministic Eliware validation harness."
-      ],
+      "dos": ["Provide a deterministic Eliware validation harness."],
       "donts": [
         "Do not define, reinterpret, duplicate, or extend repository conventions in the harness specification.",
         "Do not perform publication, deployment, synchronization, tagging, pushing, or other external state changes during validation."
@@ -22,12 +20,8 @@
       "directives": [
         {
           "id": "E-18.1",
-          "dos": [
-            "Treat forks of non-Eliware repositories as exempt from Eliware validation."
-          ],
-          "donts": [
-            "Do not impose Eliware checks on an out-of-scope upstream fork."
-          ],
+          "dos": ["Treat forks of non-Eliware repositories as exempt from Eliware validation."],
+          "donts": ["Do not impose Eliware checks on an out-of-scope upstream fork."],
           "directives": [
             {
               "id": "A-18.1.0",
@@ -42,12 +36,8 @@
         },
         {
           "id": "E-18.2",
-          "dos": [
-            "Fail fast when required repository configuration is missing or malformed."
-          ],
-          "donts": [
-            "Do not begin partial validation with invalid repository configuration."
-          ],
+          "dos": ["Fail fast when required repository configuration is missing or malformed."],
+          "donts": ["Do not begin partial validation with invalid repository configuration."],
           "directives": [
             {
               "id": "A-18.2.0",
@@ -61,9 +51,7 @@
             },
             {
               "id": "A-18.2.1",
-              "dos": [
-                "Require explicit configuration wherever the harness contract requires it."
-              ],
+              "dos": ["Require explicit configuration wherever the harness contract requires it."],
               "donts": [
                 "Do not infer applicability from repository shape, dependencies, files, scripts, entrypoints, or runtime behavior.",
                 "Do not apply an implicit default profile when explicit selection is required."
@@ -73,12 +61,8 @@
         },
         {
           "id": "E-18.3",
-          "dos": [
-            "Keep bundled checks self-contained and organized in profile directories."
-          ],
-          "donts": [
-            "Do not require a private external authority repository at runtime."
-          ],
+          "dos": ["Keep bundled checks self-contained and organized in profile directories."],
+          "donts": ["Do not require a private external authority repository at runtime."],
           "directives": [
             {
               "id": "A-18.3.0",
@@ -94,12 +78,8 @@
         },
         {
           "id": "E-18.4",
-          "dos": [
-            "Give every requirement an individually identifiable check module."
-          ],
-          "donts": [
-            "Do not combine unrelated requirements into an unidentifiable check."
-          ],
+          "dos": ["Give every requirement an individually identifiable check module."],
+          "donts": ["Do not combine unrelated requirements into an unidentifiable check."],
           "directives": [
             {
               "id": "A-18.4.0",
@@ -107,29 +87,21 @@
                 "Make each check's module identity, bundled location, and reported identity agree.",
                 "Reject duplicate, malformed, missing, or invalid check identities."
               ],
-              "donts": [
-                "Do not silently overwrite or merge duplicate check identities."
-              ]
+              "donts": ["Do not silently overwrite or merge duplicate check identities."]
             },
             {
               "id": "A-18.4.1",
               "dos": [
                 "Map each convention check to an existing directive identity in the bundled authority snapshot."
               ],
-              "donts": [
-                "Do not invent a convention requirement from an implementation detail."
-              ]
+              "donts": ["Do not invent a convention requirement from an implementation detail."]
             }
           ]
         },
         {
           "id": "E-18.5",
-          "dos": [
-            "Execute applicable bundled architecture checks."
-          ],
-          "donts": [
-            "Do not silently skip an applicable bundled architecture check."
-          ],
+          "dos": ["Execute applicable bundled architecture checks."],
+          "donts": ["Do not silently skip an applicable bundled architecture check."],
           "directives": [
             {
               "id": "A-18.5.0",
@@ -146,9 +118,7 @@
               "dos": [
                 "Keep the harness implementation native ESM, modular, injectable, and covered by its native test suite."
               ],
-              "donts": [
-                "Do not require consumers to import internal harness modules."
-              ]
+              "donts": ["Do not require consumers to import internal harness modules."]
             }
           ]
         },
@@ -204,12 +174,8 @@
         },
         {
           "id": "E-18.7",
-          "dos": [
-            "Support focused testing without silently broadening the requested scope."
-          ],
-          "donts": [
-            "Do not replace a focused request with an unrelated broad run."
-          ],
+          "dos": ["Support focused testing without silently broadening the requested scope."],
+          "donts": ["Do not replace a focused request with an unrelated broad run."],
           "directives": [
             {
               "id": "A-18.7.0",
@@ -228,6 +194,17 @@
               ],
               "donts": [
                 "Do not silently broaden focused validation because a path is difficult to resolve."
+              ]
+            },
+            {
+              "id": "A-18.7.2",
+              "dos": [
+                "Expose stable public CLI flags for the universal bundled validation stages and the npm package dry-run stage: --lint, --audit, --format, --format-check, and --pack.",
+                "Run only the stage selected by an explicit stage flag, while an invocation without a stage flag runs the applicable aggregate validation pipeline.",
+                "Return the selected stage's stable pass/fail result and diagnostics through the same public CLI contract."
+              ],
+              "donts": [
+                "Do not silently ignore an unknown or unsupported stage flag, broaden a focused stage request into unrelated stages, or expose direct tool commands as the consumer interface."
               ]
             }
           ]
