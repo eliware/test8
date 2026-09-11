@@ -1,146 +1,235 @@
 {
   "version": "8.0",
-  "description": "Eliware Test deterministic convention-enforcement harness directive.",
+  "description": "Specification for the deterministic Eliware validation harness.",
   "authority": {
     "authoritativeFor": [
-      "The standard harness for deterministic repository-convention enforcement.",
-      "The harness configuration, check identity, result, and validation contract."
+      "Harness configuration, bundled-check discovery, check execution, result reporting, and validation safety."
     ],
     "notAuthoritativeFor": [
-      "The repository conventions being enforced.",
-      "Semantic review, human approval, external registries, release authorization, deployment, or operations."
+      "Repository requirements, convention wording, profile applicability, exemptions, publication policy, deployment, or operations."
     ]
   },
-  "crosslinks": [
-    {
-      "path": "../../docs/authority-map.json",
-      "relation": "relatedAuthority",
-      "authoritativeFor": "Repository authority and the E-18 namespace."
-    },
-    {
-      "path": "../../conventions/specs/*.json",
-      "relation": "relatedAuthority",
-      "authoritativeFor": "The convention directives this harness evaluates."
-    }
-  ],
   "directives": [
     {
       "id": "E-18",
       "dos": [
-        "Provide the standard Eliware repository-validation harness.",
-        "Enforce every convention requirement that can be validated deterministically or partially deterministically from repository, configuration, filesystem, process, or test evidence.",
-        "Leave requirements that cannot be validated even partially through deterministic evidence to the responsible human or semantic review process.",
-        "Use the authoritative convention specifications as the source of the requirements; do not duplicate those requirements in this specification."
+        "Provide a deterministic Eliware validation harness."
       ],
       "donts": [
-        "Do not define, reinterpret, or replace the conventions in the harness specification.",
-        "Do not infer which convention groups apply from repository contents or project shape.",
-        "Do not silently pass missing, malformed, unknown, duplicate, or unexpectedly skipped configuration or checks.",
-        "Do not expose internal checks, orchestrators, or utilities as the consumer runtime interface."
+        "Do not define, reinterpret, duplicate, or extend repository conventions in the harness specification.",
+        "Do not perform publication, deployment, synchronization, tagging, pushing, or other external state changes during validation."
       ],
       "directives": [
         {
           "id": "E-18.1",
           "dos": [
-            "Treat forks of non-Eliware repositories as exempt from Eliware conventions.",
-            "Do not require fork-specific check modules or apply Eliware convention checks to an excluded upstream fork."
+            "Treat forks of non-Eliware repositories as exempt from Eliware validation."
           ],
           "donts": [
-            "Do not create or execute src/checks/fork/* modules for repositories outside the Eliware convention boundary."
+            "Do not impose Eliware checks on an out-of-scope upstream fork."
+          ],
+          "directives": [
+            {
+              "id": "A-18.1.0",
+              "dos": [
+                "Determine fork exemption from the repository's declared scope before selecting checks."
+              ],
+              "donts": [
+                "Do not use a fork exemption to skip checks for an in-scope Eliware repository."
+              ]
+            }
           ]
         },
         {
           "id": "E-18.2",
           "dos": [
-            "Fail fast before convention-check discovery when package.json is missing or unreadable.",
-            "Fail fast before convention-check discovery when package.json.eliware is missing or malformed.",
-            "Fail fast when the declared convention baseline, applied groups, or exemption configuration is invalid or unsupported."
+            "Fail fast when required repository configuration is missing or malformed."
           ],
           "donts": [
-            "Do not infer a default package, convention baseline, applied group, or exemption configuration.",
-            "Do not begin partial validation after a fatal package or convention-configuration error."
-          ]
-        },
-        {
-          "id": "A-18.0",
-          "dos": [
-            "Keep the public consumer interface at the eliware-test CLI.",
-            "Keep the CLI, orchestrators, checks, process adapters, diagnostics, and utilities as separate focused responsibilities."
+            "Do not begin partial validation with invalid repository configuration."
           ],
-          "donts": ["Do not require consumers to import internal implementation modules."],
           "directives": [
             {
-              "id": "A-18.0.0",
+              "id": "A-18.2.0",
               "dos": [
-                "Support the documented CLI modes and options through the public command.",
-                "Report failures with stable categories while preserving actionable diagnostics."
+                "Read declared check selection and exemption configuration before validation begins.",
+                "Require each exemption to identify one exact rule, its reason, Eli's approval, and an expiry or review condition."
               ],
-              "donts": ["Do not require consumers to know convention-specific module paths."]
+              "donts": [
+                "Do not treat malformed, unauthorized, expired, or ambiguous exemptions as valid."
+              ]
+            },
+            {
+              "id": "A-18.2.1",
+              "dos": [
+                "Require explicit configuration wherever the harness contract requires it."
+              ],
+              "donts": [
+                "Do not infer applicability from repository shape, dependencies, files, scripts, entrypoints, or runtime behavior.",
+                "Do not apply an implicit default profile when explicit selection is required."
+              ]
             }
           ]
         },
         {
-          "id": "A-18.1",
+          "id": "E-18.3",
           "dos": [
-            "Read the convention baseline, explicitly applied convention groups, and exact exemptions from package.json.eliware before selecting checks.",
-            "Apply only explicitly configured groups and exact rule exemptions."
+            "Keep bundled checks self-contained and organized in profile directories."
           ],
           "donts": [
-            "Do not infer applicability from dependencies, files, scripts, entrypoints, or runtime behavior.",
-            "Do not use broad or undocumented exemptions."
+            "Do not require a private external authority repository at runtime."
+          ],
+          "directives": [
+            {
+              "id": "A-18.3.0",
+              "dos": [
+                "Discover checks deterministically from the published harness package.",
+                "Treat packaged check modules as the runtime authority snapshot."
+              ],
+              "donts": [
+                "Do not use a separate runtime registry that can diverge from bundled check modules."
+              ]
+            }
           ]
         },
         {
-          "id": "A-18.2",
+          "id": "E-18.4",
           "dos": [
-            "Represent each deterministic or partially deterministic check as a separately identifiable module under src/checks/<group>/<id>.mjs.",
-            "Require the module filename, exported rule ID, and result rule ID to agree exactly."
+            "Give every requirement an individually identifiable check module."
           ],
           "donts": [
-            "Do not create modules for requirements with no deterministic evidence path.",
-            "Do not let one module silently represent multiple unrelated requirements."
+            "Do not combine unrelated requirements into an unidentifiable check."
+          ],
+          "directives": [
+            {
+              "id": "A-18.4.0",
+              "dos": [
+                "Make each check's module identity, bundled location, and reported identity agree.",
+                "Reject duplicate, malformed, missing, or invalid check identities."
+              ],
+              "donts": [
+                "Do not silently overwrite or merge duplicate check identities."
+              ]
+            },
+            {
+              "id": "A-18.4.1",
+              "dos": [
+                "Map each convention check to an existing directive identity in the bundled authority snapshot."
+              ],
+              "donts": [
+                "Do not invent a convention requirement from an implementation detail."
+              ]
+            }
           ]
         },
         {
-          "id": "A-18.3",
+          "id": "E-18.5",
           "dos": [
-            "Return only pass or fail for each check with a stable rule ID and actionable message.",
-            "Aggregate selected results without converting uncertainty into success.",
-            "Keep discovery, filesystem traversal, subprocess output, and user-facing paths bounded and normalized."
+            "Execute applicable bundled architecture checks."
           ],
           "donts": [
-            "Do not return warning, review, skipped, or unknown as a check outcome.",
-            "Do not silently ignore malformed or missing evidence."
+            "Do not silently skip an applicable bundled architecture check."
+          ],
+          "directives": [
+            {
+              "id": "A-18.5.0",
+              "dos": [
+                "Run the harness's own applicable architecture checks as part of harness validation.",
+                "Preserve each architecture check's pass/fail result and diagnostics."
+              ],
+              "donts": [
+                "Do not replace architecture-check failures with warnings or successful output."
+              ]
+            },
+            {
+              "id": "A-18.5.1",
+              "dos": [
+                "Keep the harness implementation native ESM, modular, injectable, and covered by its native test suite."
+              ],
+              "donts": [
+                "Do not require consumers to import internal harness modules."
+              ]
+            }
           ]
         },
         {
-          "id": "A-18.4",
+          "id": "E-18.6",
           "dos": [
-            "Preserve the established deterministic validation lifecycle and its focused-test, coverage, lint, package-check, and diagnostic behavior where it does not conflict with the authoritative conventions.",
-            "Run all applicable post-test validation stages needed to report actionable failures."
+            "Make checks return only pass or fail with stable identities and actionable diagnostics."
           ],
           "donts": [
-            "Do not silently fall back from a requested focused validation to an unrelated broad validation.",
-            "Do not let an enforcement opt-out disable unrelated validation stages."
+            "Do not expose an undocumented warning, skipped, unknown, or partial state as a passing result."
+          ],
+          "directives": [
+            {
+              "id": "A-18.6.0",
+              "dos": [
+                "Report each check independently and aggregate results deterministically.",
+                "Preserve failed-check diagnostics without allowing another result to erase them."
+              ],
+              "donts": [
+                "Do not silently skip a selected check or convert uncertainty into success."
+              ]
+            },
+            {
+              "id": "A-18.6.1",
+              "dos": [
+                "Keep filesystem traversal, path handling, subprocess execution, and captured diagnostics bounded and platform-neutral.",
+                "Invoke child processes with argument arrays and preserve useful failure context."
+              ],
+              "donts": [
+                "Do not depend on shell pipelines, shell quoting, platform-specific executable assumptions, or unbounded output capture.",
+                "Do not expose sensitive values in harness-owned diagnostics."
+              ]
+            },
+            {
+              "id": "A-18.6.2",
+              "dos": [
+                "Use stable failure categories and deterministic precedence for process results."
+              ],
+              "donts": [
+                "Do not change public result semantics as an incidental implementation detail."
+              ]
+            },
+            {
+              "id": "A-18.6.3",
+              "dos": [
+                "Keep validation read-only with respect to external systems and publication state."
+              ],
+              "donts": [
+                "Do not publish, release, deploy, synchronize, tag, push, or mutate external state during validation."
+              ]
+            }
           ]
         },
         {
-          "id": "A-18.5",
+          "id": "E-18.7",
           "dos": [
-            "Use native ESM and native Jest suites for the harness implementation and its tests.",
-            "Keep implementation tests beside the responsibility they directly exercise and keep orchestration tests focused on composition."
-          ],
-          "donts": ["Do not introduce alternate test frameworks or compatibility test harnesses."]
-        },
-        {
-          "id": "A-18.6",
-          "dos": [
-            "Preserve useful deterministic behavior from prior harness releases when it is compatible with the authoritative v8 conventions.",
-            "Keep unsupported semantic, approval-dependent, external-registry, and live-operational concerns outside deterministic check modules."
+            "Support focused testing without silently broadening the requested scope."
           ],
           "donts": [
-            "Do not claim deterministic enforcement for a requirement without a reproducible evidence source.",
-            "Do not publish, tag, push, deploy, or perform other external state changes as an implicit validation side effect."
+            "Do not replace a focused request with an unrelated broad run."
+          ],
+          "directives": [
+            {
+              "id": "A-18.7.0",
+              "dos": [
+                "Expose focused execution through the public eliware-test command.",
+                "Validate focused paths and report failures within the requested scope."
+              ],
+              "donts": [
+                "Do not require consumers to import internal harness modules to focus a run."
+              ]
+            },
+            {
+              "id": "A-18.7.1",
+              "dos": [
+                "Keep unrelated sources and checks out of focused failure reporting unless explicitly requested."
+              ],
+              "donts": [
+                "Do not silently broaden focused validation because a path is difficult to resolve."
+              ]
+            }
           ]
         }
       ]
