@@ -1,49 +1,108 @@
 # `@eliware/test` contributor guidance
 
-Applies to: repository-wide.
+## Instruction scope
 
-This is the native v8 implementation of the shared Eliware deterministic
-validation CLI. The older repository is reference material only; test8 does
-not provide a compatibility layer.
+These instructions apply repository-wide. No subdirectory-specific AGENTS.md
+files currently override them.
 
-Before changing files, read `README.md`, this file, and the applicable
-documentation and specifications under `docs/` and `specs/`.
+## Read before changing
 
-## Rules
+Read README.md, AGENTS.md, and applicable documentation before changes. In
+particular, read the applicable documentation and specifications under `docs/`
+and `specs/` before changing files.
 
-- Use Node.js 26, native ESM, and `.mjs` source and test files.
+## Authoritative sources
+
+- `eliware/docs` is authoritative for shared documentation content and
+  cross-repository ownership.
+- `eliware/conventions` is authoritative for repository structure, required
+  files, metadata, and committed contents.
+- `eliware/operations` is authoritative for release, deployment, and other
+  cross-cutting operational procedures.
+- This repository's `specs/directives.json` is authoritative only for the
+  validator harness contract; it does not define repository requirements,
+  exemptions, publication policy, deployment, or operations.
+
+## Repository identity
+
+- Project: `@eliware/test`
+- Purpose: native v8 implementation of the shared Eliware deterministic
+  validation CLI.
+- Runtime: Node.js 26 with native ESM and `.mjs` source and test files.
+
+## Scope and boundaries
+
+- The older repository is reference material only; Test8 does not provide a
+  compatibility layer.
+- The CLI entrypoint is `bin/eliware-test.mjs`.
+- This repository performs local and CI validation only. Release, publication,
+  deployment, and other operational changes are controlled by Eliware runbooks.
+- Do not modify `test8/src` or `test8/tests` as part of documentation-only or
+  instruction-alignment work unless separately authorized.
+
+## Repository-specific rules
+
 - Runtime commands are the package scripts in `package.json`; `.env.example`
-  documents the repository's environment configuration, and no runtime secret
-  or local `.env` file belongs in version control.
-- The CLI entrypoint is `bin/eliware-test.mjs`. Supported modes include the
-  default validation run, `--lint`, `--format`, `--format-check`, `--help`,
-  `--version`, focused Jest arguments, and the documented diagnostic flags.
-  Usage validation rejects unsupported or missing paths before Jest starts.
+  documents repository environment configuration.
+- Application configuration, connection lifecycle, repeatable shutdown, and
+  externally observable workflow requirements must remain documented when they
+  apply to a consuming application repository.
+- Supported modes include the default validation run, `--lint`, `--format`,
+  `--format-check`, `--help`, `--version`, focused Jest arguments, and the
+  documented diagnostic flags. Usage validation rejects unsupported or missing
+  paths before Jest starts.
 - Platform-specific process behavior must use Node APIs and argument arrays;
   do not assume a Unix shell or platform-specific executable names.
 - Keep new modules single-purpose and keep orchestrators limited to composition.
-- Exercise new modules through the existing Jest suites where possible; add
+- Exercise new modules through existing Jest suites where possible; add
   mirrored test files when required by applicable conventions or explicitly
   requested.
-- Keep fixtures and source-less test support under one root `artifacts/` directory.
+- Keep fixtures and source-less test support under one root `artifacts/`
+  directory.
 - Add new orchestrators, sub-orchestrators, adapters, and registry modules;
   do not add v8 behavior to the older reference repository.
-- Preserve stable rule IDs, deterministic diagnostics, and the public CLI boundary.
-- Do not commit secrets, private runtime state, or generated output.
-- Web-specific repositories must document routes, assets, configuration,
-  browser validation, deployment boundaries, and assigned ports.
-- Library-specific repositories must document the public API, exports,
-  declarations, compatibility expectations, packaging, and consumer validation.
-- Application-specific repositories must document configuration validation,
-  connection lifecycle, repeatable shutdown, and externally observable workflows.
-- Repository identity, purpose, scope, boundaries, subdirectory instructions,
-  security handling, deviations, required files, and validation commands are
-  documented here; contributors must read README.md, AGENTS.md, and applicable
-  documentation before changes.
+- Preserve stable rule IDs, deterministic diagnostics, and the public CLI
+  boundary.
+- Web, library, and application repositories have additional documentation
+  requirements described in the applicable conventions.
+
+## Required structure
+
+- Keep the root `README.md`, `AGENTS.md`, `package.json`, `package-lock.json`,
+  `LICENSE`, `.env.example`, and `RELEASE_NOTES.md` present.
+- Keep `bin/eliware-test.mjs`, `src/`, and `tests/` as the CLI implementation
+  and validation suites.
+- Keep `docs/README.md` and `specs/README.md` as indexes for documentation and
+  Test8 specifications.
+- Keep `.knit/` and the package metadata required by the applicable convention
+  profiles present and discoverable from the root README.
+
+## Security and secrets
+
+- No runtime secret or local `.env` file belongs in version control.
+- Do not commit secrets, private runtime state, generated output, credentials,
+  or machine state.
+- Validation output must not print secrets or arbitrary environment values.
 
 ## Validation
 
-Run `npm test`, `npm run lint`, `npm run format:check`, and `git diff --check`.
+- Validation commands are `npm test`, `npm run lint`, `npm run format:check`,
+  and `git diff --check`.
 
-The self-hosting scripts use the local CLI because `@eliware/test` cannot
-install itself as its own development dependency.
+## Approved deviations
+
+- The self-hosting scripts use the local CLI because `@eliware/test` cannot
+  install itself as its own development dependency. This is an approved
+  package exemption and does not change the shared convention authority.
+
+## Change control and authorization
+
+- Do not release, publish, deploy, synchronize, tag, commit, or push without
+  explicit authorization for the current task.
+- The CLI performs no deploy, publish, release, or destructive repository
+  operation.
+
+## Subdirectory instructions
+
+No subdirectory-specific AGENTS.md files currently override these repository-wide
+instructions.
