@@ -43,10 +43,11 @@
               "id": "A-18.2.0",
               "dos": [
                 "Read declared check selection and exemption configuration before validation begins.",
-                "Require each exemption to identify one exact rule, its reason, Eli's approval, approval timestamp, and an expiry or review condition."
+                "Require each exemption to identify one exact rule, its reason, Eli's approval, approval timestamp, and either a concrete expiry date for a temporary exemption or expiry:null for a permanent exemption.",
+                "Enforce the exemption record and its applicability as a consumer of the Conventions policy; do not re-review, renew, or second-guess Eli's recorded temporary or permanent decision."
               ],
               "donts": [
-                "Do not treat malformed, unauthorized, expired, or ambiguous exemptions as valid."
+                "Do not treat malformed, unauthorized, expired, or ambiguous exemptions as valid, and do not require periodic review, renewal, or re-justification for a permanent expiry:null exemption."
               ]
             },
             {
