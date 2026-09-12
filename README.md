@@ -66,6 +66,7 @@ git diff --check
 
 - [Documentation](docs/README.md)
 - [Specifications](specs/README.md)
+- [Local authority](specs/authority.json)
 - [Examples](examples/README.md)
 - [Release notes](RELEASE_NOTES.md)
 

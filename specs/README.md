@@ -6,6 +6,7 @@ validation harness.
 ## Files
 
 - [directives.json](directives.json) — harness directives.
+- [authority.json](authority.json) — Test8-local authority distribution.
 
 The CLI contract in `directives.json` defines the public stage flags, profile
 applicability, focused versus aggregate behavior, formatter safety, and stable
