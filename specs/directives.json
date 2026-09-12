@@ -12,14 +12,17 @@
   "crosslinks": [
     {
       "path": "../../docs/authority-map.json",
+      "relation": "relatedAuthority",
       "authoritativeFor": "Cross-repository ownership and authority boundaries."
     },
     {
       "path": "../../conventions/specs/general.json",
+      "relation": "relatedAuthority",
       "authoritativeFor": "Universal repository conventions and profile authority."
     },
     {
       "path": "../../operations/specs/directives.json",
+      "relation": "relatedAuthority",
       "authoritativeFor": "Cross-cutting operational procedures and publication/deployment boundaries."
     }
   ],

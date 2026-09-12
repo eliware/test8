@@ -141,6 +141,11 @@
         "path": "../conventions/specs/npm-published.json",
         "relation": "relatedAuthority",
         "authoritativeFor": "npm publication conventions enforced by this package."
+      },
+      {
+        "path": "../operations/records.json",
+        "relation": "relatedAuthority",
+        "authoritativeFor": "Cross-cutting release, publication, and deployment procedures."
       }
     ]
   }

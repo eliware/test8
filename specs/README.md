@@ -14,4 +14,8 @@ exit-code precedence. Repository requirements and profile policy remain
 authoritative in Eliware Conventions; this specification defines only how the
 harness exposes and enforces them.
 
+The Docs authority map is the cross-repository tie-breaker, and Operations
+remains authoritative for release, publication, deployment, and other
+cross-cutting procedures.
+
 [Return to the root README](../README.md).

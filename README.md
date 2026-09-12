@@ -36,6 +36,14 @@ eliware-test --debug-timing
 The v8 orchestration and convention-check registry are implemented as focused
 native ESM modules under `src/`.
 
+## Authority and scope
+
+Test8 owns the validator architecture, public CLI lifecycle, deterministic
+check execution, and validation acceptance contract. Docs owns cross-repository
+documentation and authority mapping; Conventions owns the policies Test8
+validates; Operations owns cross-cutting release, deployment, and publication
+procedures. Test8 consumes those policies and does not redefine them.
+
 For web applicability, document routes, assets, configuration, ports, browser
 validation, and deployment boundaries. Library applicability additionally
 requires public API, packaging, and examples documentation.

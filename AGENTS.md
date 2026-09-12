@@ -19,6 +19,9 @@ and `specs/` before changing files.
   files, metadata, and committed contents.
 - `eliware/operations` is authoritative for release, deployment, and other
   cross-cutting operational procedures.
+- Read `../docs/authority-map.json`, `../conventions/specs/`,
+  `../operations/records.json`, and the relevant local specification before
+  changing governance files.
 - This repository's `specs/directives.json` is authoritative only for the
   validator harness contract; it does not define repository requirements,
   exemptions, publication policy, deployment, or operations.
@@ -39,6 +42,9 @@ and `specs/` before changing files.
   deployment, and other operational changes are controlled by Eliware runbooks.
 - Do not modify `test8/src` or `test8/tests` as part of documentation-only or
   instruction-alignment work unless separately authorized.
+- Test8 validates repository directives as a consumer of the authoritative
+  Docs/Conventions/Operations policies; it does not own or redefine those
+  policies.
 
 ## Repository-specific rules
 
@@ -75,7 +81,8 @@ and `specs/` before changing files.
 - Keep `docs/README.md` and `specs/README.md` as indexes for documentation and
   Test8 specifications.
 - Keep `.knit/` and the package metadata required by the applicable convention
-  profiles present and discoverable from the root README.
+  profiles present and discoverable from the root README. Use the Tasklist CLI
+  for live task-board mutations.
 
 ## Security and secrets
 
