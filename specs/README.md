@@ -12,3 +12,5 @@ applicability, focused versus aggregate behavior, formatter safety, and stable
 exit-code precedence. Repository requirements and profile policy remain
 authoritative in Eliware Conventions; this specification defines only how the
 harness exposes and enforces them.
+
+[Return to the root README](../README.md).
