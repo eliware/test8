@@ -9,6 +9,20 @@
       "Repository requirements, convention wording, profile applicability, exemptions, publication policy, deployment, or operations."
     ]
   },
+  "crosslinks": [
+    {
+      "path": "../../docs/authority-map.json",
+      "authoritativeFor": "Cross-repository ownership and authority boundaries."
+    },
+    {
+      "path": "../../conventions/specs/general.json",
+      "authoritativeFor": "Universal repository conventions and profile authority."
+    },
+    {
+      "path": "../../operations/specs/directives.json",
+      "authoritativeFor": "Cross-cutting operational procedures and publication/deployment boundaries."
+    }
+  ],
   "directives": [
     {
       "id": "E-18",
