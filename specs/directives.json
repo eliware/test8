@@ -12,9 +12,7 @@
   "directives": [
     {
       "id": "E-18",
-      "dos": [
-        "Provide a deterministic Eliware validation harness."
-      ],
+      "dos": ["Provide a deterministic Eliware validation harness."],
       "donts": [
         "Do not define, reinterpret, duplicate, or extend repository conventions in the harness specification.",
         "Do not perform publication, deployment, synchronization, tagging, pushing, or other external state changes during validation."
@@ -22,12 +20,8 @@
       "directives": [
         {
           "id": "E-18.1",
-          "dos": [
-            "Treat forks of non-Eliware repositories as exempt from Eliware validation."
-          ],
-          "donts": [
-            "Do not impose Eliware checks on an out-of-scope upstream fork."
-          ],
+          "dos": ["Treat forks of non-Eliware repositories as exempt from Eliware validation."],
+          "donts": ["Do not impose Eliware checks on an out-of-scope upstream fork."],
           "directives": [
             {
               "id": "A-18.1.0",
@@ -42,12 +36,8 @@
         },
         {
           "id": "E-18.2",
-          "dos": [
-            "Fail fast when required repository configuration is missing or malformed."
-          ],
-          "donts": [
-            "Do not begin partial validation with invalid repository configuration."
-          ],
+          "dos": ["Fail fast when required repository configuration is missing or malformed."],
+          "donts": ["Do not begin partial validation with invalid repository configuration."],
           "directives": [
             {
               "id": "A-18.2.0",
@@ -61,9 +51,7 @@
             },
             {
               "id": "A-18.2.1",
-              "dos": [
-                "Require explicit configuration wherever the harness contract requires it."
-              ],
+              "dos": ["Require explicit configuration wherever the harness contract requires it."],
               "donts": [
                 "Do not infer applicability from repository shape, dependencies, files, scripts, entrypoints, or runtime behavior.",
                 "Do not apply an implicit default profile when explicit selection is required."
@@ -73,12 +61,8 @@
         },
         {
           "id": "E-18.3",
-          "dos": [
-            "Keep bundled checks self-contained and organized in profile directories."
-          ],
-          "donts": [
-            "Do not require a private external authority repository at runtime."
-          ],
+          "dos": ["Keep bundled checks self-contained and organized in profile directories."],
+          "donts": ["Do not require a private external authority repository at runtime."],
           "directives": [
             {
               "id": "A-18.3.0",
@@ -94,12 +78,8 @@
         },
         {
           "id": "E-18.4",
-          "dos": [
-            "Give every requirement an individually identifiable check module."
-          ],
-          "donts": [
-            "Do not combine unrelated requirements into an unidentifiable check."
-          ],
+          "dos": ["Give every requirement an individually identifiable check module."],
+          "donts": ["Do not combine unrelated requirements into an unidentifiable check."],
           "directives": [
             {
               "id": "A-18.4.0",
@@ -107,29 +87,21 @@
                 "Make each check's module identity, bundled location, and reported identity agree.",
                 "Reject duplicate, malformed, missing, or invalid check identities."
               ],
-              "donts": [
-                "Do not silently overwrite or merge duplicate check identities."
-              ]
+              "donts": ["Do not silently overwrite or merge duplicate check identities."]
             },
             {
               "id": "A-18.4.1",
               "dos": [
                 "Map each convention check to an existing directive identity in the bundled authority snapshot."
               ],
-              "donts": [
-                "Do not invent a convention requirement from an implementation detail."
-              ]
+              "donts": ["Do not invent a convention requirement from an implementation detail."]
             }
           ]
         },
         {
           "id": "E-18.5",
-          "dos": [
-            "Execute applicable bundled architecture checks."
-          ],
-          "donts": [
-            "Do not silently skip an applicable bundled architecture check."
-          ],
+          "dos": ["Execute applicable bundled architecture checks."],
+          "donts": ["Do not silently skip an applicable bundled architecture check."],
           "directives": [
             {
               "id": "A-18.5.0",
@@ -146,9 +118,7 @@
               "dos": [
                 "Keep the harness implementation native ESM, modular, injectable, and covered by its native test suite."
               ],
-              "donts": [
-                "Do not require consumers to import internal harness modules."
-              ]
+              "donts": ["Do not require consumers to import internal harness modules."]
             }
           ]
         },
@@ -204,12 +174,8 @@
         },
         {
           "id": "E-18.7",
-          "dos": [
-            "Support focused testing without silently broadening the requested scope."
-          ],
-          "donts": [
-            "Do not replace a focused request with an unrelated broad run."
-          ],
+          "dos": ["Support focused testing without silently broadening the requested scope."],
+          "donts": ["Do not replace a focused request with an unrelated broad run."],
           "directives": [
             {
               "id": "A-18.7.0",
@@ -239,6 +205,58 @@
               ],
               "donts": [
                 "Do not silently ignore an unknown or unsupported stage flag, broaden a focused stage request into unrelated stages, or expose direct tool commands as the consumer interface."
+              ]
+            },
+            {
+              "id": "A-18.7.3",
+              "dos": [
+                "Treat --help and --version as informational commands that perform no validation and return exit code 0.",
+                "Map --lint to the universal lint stage and return 0 on success or 12 on a lint failure.",
+                "Map --audit to the universal audit stage and return 0 on success or 17 on a package-check failure.",
+                "Map --format to the universal formatter stage; it may rewrite local repository files and returns 0 on success or 18 on a convention/formatting failure.",
+                "Map --format-check to the universal read-only formatter-check stage and return 0 when formatting is compliant or 18 when formatting differs or the check fails.",
+                "Map --pack to the npm-published package dry-run stage and return 0 on success or 17 on a package-check failure.",
+                "Require explicit convention profile selection for applicability; the universal stages are available under general, while --pack is applicable only when npm-published is selected."
+              ],
+              "donts": [
+                "Do not infer profile applicability from repository shape, files, scripts, dependencies, or runtime behavior.",
+                "Do not make an inapplicable explicit stage flag silently succeed, run a different stage, or broaden into the aggregate pipeline; report the stable convention failure instead."
+              ]
+            },
+            {
+              "id": "A-18.7.4",
+              "dos": [
+                "Run only the selected stage when one explicit stage flag is present.",
+                "When no stage flag is present, run the applicable aggregate pipeline, including the universal audit stage and the npm-published pack stage when that profile is selected.",
+                "Keep the aggregate pipeline from invoking the formatter-writing stage implicitly; format remains an explicit command and format-check remains read-only."
+              ],
+              "donts": [
+                "Do not run lint, audit, format, format-check, or pack as unrelated side effects of another explicit stage request.",
+                "Do not invoke the consumer test script recursively from the package-check stage."
+              ]
+            },
+            {
+              "id": "A-18.7.5",
+              "dos": [
+                "Allow a recognized focused path with the selected test-related stage and keep discovery, diagnostics, and failures within that requested scope.",
+                "Keep stage selection and path focus orthogonal: a focused path does not add stages, and a stage flag does not broaden the path.",
+                "Reject unsupported, missing, or ambiguous focused paths with the stable convention failure result before executing unrelated validation."
+              ],
+              "donts": [
+                "Do not apply focused-path narrowing to a package-wide --pack operation or silently reinterpret a package path as a test focus.",
+                "Do not fall back to aggregate validation when a focused path cannot be resolved."
+              ]
+            },
+            {
+              "id": "A-18.7.6",
+              "dos": [
+                "Use these stable result categories and exit codes: 0 success, 8 Jest/test failure, 10 coverage failure, 12 lint failure, 14 internal tool/process failure, 17 package-check failure, and 18 convention, configuration, applicability, argument, format, or format-check failure.",
+                "Stop before test execution for invalid configuration, unsupported arguments, or inapplicable selected stages; preserve the stable failure result and diagnostics.",
+                "After test execution, preserve every failed-stage diagnostic and use the highest applicable post-test exit code as the aggregate result; numeric precedence is an output rule, not a ranking of root-cause severity."
+              ],
+              "donts": [
+                "Do not convert an unknown, skipped, partial, or inapplicable selected stage into success.",
+                "Do not allow a later result to erase an earlier failure diagnostic or change public exit semantics as an incidental implementation detail."
               ]
             }
           ]
