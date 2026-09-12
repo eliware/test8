@@ -22,8 +22,9 @@ documentation and specifications under `docs/` and `specs/`.
 - Platform-specific process behavior must use Node APIs and argument arrays;
   do not assume a Unix shell or platform-specific executable names.
 - Keep new modules single-purpose and keep orchestrators limited to composition.
-- Exercise new modules through the existing Jest suites where possible; do not
-  add new test files unless explicitly requested.
+- Exercise new modules through the existing Jest suites where possible; add
+  mirrored test files when required by applicable conventions or explicitly
+  requested.
 - Keep fixtures and source-less test support under one root `artifacts/` directory.
 - Add new orchestrators, sub-orchestrators, adapters, and registry modules;
   do not add v8 behavior to the older reference repository.
