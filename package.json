@@ -14,6 +14,9 @@
   "author": "Eliware <eliware@eliware.org>",
   "license": "MIT",
   "type": "module",
+  "engines": {
+    "node": ">=26"
+  },
   "bin": {
     "eliware-test": "./bin/eliware-test.mjs"
   },
@@ -37,7 +40,8 @@
   },
   "homepage": "https://github.com/eliware/test#readme",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "scripts": {
     "test": "node bin/eliware-test.mjs",
@@ -45,7 +49,7 @@
     "format": "node bin/eliware-test.mjs --format",
     "format:check": "node bin/eliware-test.mjs --format-check",
     "audit": "node bin/run-audit.mjs",
-    "pack": "npm pack --dry-run"
+    "pack": "eliware-test --pack"
   },
   "prettier": {
     "printWidth": 100,
@@ -70,9 +74,6 @@
       "text",
       "json-summary"
     ]
-  },
-  "engines": {
-    "node": ">=26"
   },
   "dependencies": {
     "jest": "^30.5.1",
