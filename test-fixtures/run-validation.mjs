@@ -30,7 +30,7 @@ export async function fixture(conventions) {
     name: "@eliware/fixture", version: "8.0.0", description: "fixture", author: "Eliware <eliware@eliware.org>", keywords: ["fixture"], license: "MIT",
     bin: { "eliware-test": "./bin/eliware-test.mjs" }, files: ["bin", "src", "specs", "docs", "examples", "README.md", "LICENSE", "RELEASE_NOTES.md"],
     publishConfig: { access: "public" }, repository: { type: "git", url: "https://github.com/eliware/fixture" }, homepage: "https://github.com/eliware/fixture#readme", type: "module", engines: { node: ">=26" },
-    dependencies: { jest: "^30.0.0", oxlint: "^1.0.0", prettier: "^3.0.0" },
+    dependencies: {},
     scripts: { test: "eliware-test", lint: "eliware-test --lint", audit: "eliware-test --audit", format: "eliware-test --format", "format:check": "eliware-test --format-check" },
     prettier: { printWidth: 100, tabWidth: 2, semi: true, singleQuote: false, trailingComma: "all" }, jest: { collectCoverageFrom: ["src/**/*.mjs"] },
     eliware: { apply: conventions.apply, exempt: conventions.exempt ?? [], authority: { authoritativeFor: ["fixture"], notAuthoritativeFor: ["runtime"] }, crosslinks: [{ path: "../docs/authority-map.json", relation: "relatedAuthority", authoritativeFor: "fixture" }] },
