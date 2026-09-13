@@ -7,8 +7,8 @@ const valid = {
   ruleId: "E-1.3",
   reason: "The package self-hosts its CLI.",
   approver: "Eli",
+  approvalTimestamp: "2026-09-11T00:00:00Z",
   expiry: null,
-  review: "Reviewed 2026-09-11",
 };
 
 describe("exemption records", () => {
@@ -18,7 +18,7 @@ describe("exemption records", () => {
   });
 
   test("requires complete authorization metadata", () => {
-    for (const field of ["ruleId", "reason", "approver", "expiry", "review"]) {
+    for (const field of ["ruleId", "reason", "approver", "approvalTimestamp", "expiry"]) {
       const record = { ...valid };
       delete record[field];
       expect(() => validateExemptionRecords([record])).toThrow();

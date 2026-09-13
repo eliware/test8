@@ -36,7 +36,7 @@ async function fixture(conventions) {
   await writeFile(
     join(root, "package.json"),
     JSON.stringify({
-      name: "fixture",
+      name: "@eliware/fixture",
       version: "8.0.0",
       description: "fixture",
       author: "Eliware <eliware@eliware.org>",
@@ -61,8 +61,12 @@ async function fixture(conventions) {
       dependencies: { jest: "^30.0.0", oxlint: "^1.0.0", prettier: "^3.0.0" },
       scripts: { test: "eliware-test", lint: "eliware-test --lint" },
       eliware: {
-        conventions: { version: conventions.version, apply: conventions.apply },
+        apply: conventions.apply,
         exempt: conventions.exempt,
+        authority: {
+          authoritativeFor: ["fixture"],
+          notAuthoritativeFor: ["runtime"],
+        },
         crosslinks: [
           {
             path: "../docs/authority-map.json",
@@ -86,23 +90,28 @@ async function fixture(conventions) {
 }
 test("skips only an exact exempted check ID", async () => {
   const root = await fixture({
-    version: "8.0",
     apply: ["general"],
     exempt: [
-      { ruleId: "E-1.0", reason: "fixture", approver: "Eli", expiry: null, review: "fixture" },
+      {
+        ruleId: "E-1.0",
+        reason: "fixture",
+        approver: "Eli",
+        approvalTimestamp: "2026-09-11T00:00:00Z",
+        expiry: null,
+      },
     ],
   });
   const results = await runValidation(root);
   expect(results.some(({ ruleId }) => ruleId === "E-1.0")).toBe(false);
   expect(results.some(({ ruleId }) => ruleId === "E-1.9")).toBe(true);
 });
-test("rejects unsupported convention configuration", async () => {
-  const root = await fixture({ version: "7.0", apply: ["general"] });
-  await expect(runValidation(root)).rejects.toThrow(/version must be 8\.0/);
+test("rejects missing convention configuration", async () => {
+  const root = await fixture({});
+  await expect(runValidation(root)).rejects.toThrow(/eliware\.apply/);
 });
 
 test("rejects the removed node convention group", async () => {
-  const root = await fixture({ version: "8.0", apply: ["general", "node"] });
+  const root = await fixture({ apply: ["general", "node"] });
   await expect(runValidation(root)).rejects.toThrow(/Unknown convention group: node/);
 });
 

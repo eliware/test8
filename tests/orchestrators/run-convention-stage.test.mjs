@@ -28,16 +28,14 @@ test("normalizes convention-runner errors as convention failures", async () => {
 });
 
 test("reads valid convention configuration", () => {
-  const conventions = { version: "8.0", apply: ["general"] };
-  expect(readConventionConfig({ eliware: { conventions } })).toBe(conventions);
+  const apply = ["general"];
+  expect(readConventionConfig({ eliware: { apply } })).toEqual({ apply });
 });
 
 test("rejects convention configuration without apply groups", () => {
-  expect(() => readConventionConfig({})).toThrow(/must define eliware\.conventions\.apply/);
+  expect(() => readConventionConfig({})).toThrow(/must define eliware\.apply/);
 });
 
-test("rejects unsupported convention versions", () => {
-  expect(() =>
-    readConventionConfig({ eliware: { conventions: { version: "7.0", apply: [] } } }),
-  ).toThrow(/version must be 8\.0/);
+test("rejects an empty apply list", () => {
+  expect(() => readConventionConfig({ eliware: { apply: [] } })).toThrow(/apply/);
 });

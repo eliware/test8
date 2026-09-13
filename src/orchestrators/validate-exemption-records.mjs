@@ -11,15 +11,15 @@ export function validateExemptionRecords(records) {
         !entry.reason.trim() ||
         typeof entry.approver !== "string" ||
         !entry.approver.trim() ||
+        typeof entry.approvalTimestamp !== "string" ||
+        !entry.approvalTimestamp.trim() ||
         (entry.expiry !== null && typeof entry.expiry !== "string") ||
-        (typeof entry.expiry === "string" && !isValidDate(entry.expiry)) ||
-        typeof entry.review !== "string" ||
-        !entry.review.trim()
+        (typeof entry.expiry === "string" && !isValidDate(entry.expiry))
       );
     })
   ) {
     throw new Error(
-      "Every exemption must identify a ruleId, reason, approver, expiry, and review.",
+      "Every exemption must identify a ruleId, reason, approver, approvalTimestamp, and expiry.",
     );
   }
   const ids = records.map(({ ruleId }) => ruleId);

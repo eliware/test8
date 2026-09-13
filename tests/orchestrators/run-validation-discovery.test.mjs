@@ -35,7 +35,7 @@ async function fixture(conventions) {
   await writeFile(
     join(root, "package.json"),
     JSON.stringify({
-      name: "fixture",
+      name: "@eliware/fixture",
       version: "8.0.0",
       description: "fixture",
       author: "Eliware <eliware@eliware.org>",
@@ -60,8 +60,12 @@ async function fixture(conventions) {
       dependencies: { jest: "^30.0.0", oxlint: "^1.0.0", prettier: "^3.0.0" },
       scripts: { test: "eliware-test", lint: "eliware-test --lint" },
       eliware: {
-        conventions: { version: conventions.version, apply: conventions.apply },
+        apply: conventions.apply,
         exempt: conventions.exempt,
+        authority: {
+          authoritativeFor: ["fixture"],
+          notAuthoritativeFor: ["runtime"],
+        },
         crosslinks: [
           {
             path: "../docs/authority-map.json",
@@ -84,15 +88,20 @@ async function fixture(conventions) {
   return root;
 }
 test("rejects malformed exemptions instead of silently skipping checks", async () => {
-  const root = await fixture({ version: "8.0", apply: ["general"], exempt: [{ ruleId: "" }] });
+  const root = await fixture({ apply: ["general"], exempt: [{ ruleId: "" }] });
   await expect(runValidation(root)).rejects.toThrow(/exemption/);
 });
 test("rejects exemptions for undiscovered rule IDs", async () => {
   const root = await fixture({
-    version: "8.0",
     apply: ["general"],
     exempt: [
-      { ruleId: "E-999", reason: "fixture", approver: "Eli", expiry: null, review: "fixture" },
+      {
+        ruleId: "E-999",
+        reason: "fixture",
+        approver: "Eli",
+        approvalTimestamp: "2026-09-11T00:00:00Z",
+        expiry: null,
+      },
     ],
   });
   await expect(runValidation(root)).rejects.toThrow(/Unknown convention exemption rule ID/);
@@ -102,24 +111,23 @@ test("rejects duplicate exemption IDs", async () => {
     ruleId: "E-1.0",
     reason: "fixture",
     approver: "Eli",
+    approvalTimestamp: "2026-09-11T00:00:00Z",
     expiry: null,
-    review: "fixture",
   };
   const root = await fixture({
-    version: "8.0",
     apply: ["general"],
     exempt: [exemption, exemption],
   });
   await expect(runValidation(root)).rejects.toThrow(/must be unique/);
 });
 test("fails unsafe environment example values", async () => {
-  const root = await fixture({ version: "8.0", apply: ["general"] });
+  const root = await fixture({ apply: ["general"] });
   await writeFile(join(root, ".env.example"), "API_TOKEN=real-secret-value\n");
   const results = await runValidation(root);
   expect(results.find(({ ruleId }) => ruleId === "A-18.5.0").status).toBe("fail");
 });
 test("fails undocumented source environment references", async () => {
-  const root = await fixture({ version: "8.0", apply: ["general"] });
+  const root = await fixture({ apply: ["general"] });
   await writeFile(
     join(root, "src", "uses-env.mjs"),
     `export const value = ${["process", "env", "MISSING_VALUE"].join(".")};\n`,
@@ -128,13 +136,13 @@ test("fails undocumented source environment references", async () => {
   expect(results.find(({ ruleId }) => ruleId === "A-18.5.0").status).toBe("fail");
 });
 test("fails broken local Markdown links", async () => {
-  const root = await fixture({ version: "8.0", apply: ["general"] });
+  const root = await fixture({ apply: ["general"] });
   await writeFile(join(root, "docs", "README.md"), "[missing](not-found.md)\n");
   const results = await runValidation(root);
   expect(results.find(({ ruleId }) => ruleId === "A-18.5.0").status).toBe("fail");
 });
 test("reports a missing environment template", async () => {
-  const root = await fixture({ version: "8.0", apply: ["general"] });
+  const root = await fixture({ apply: ["general"] });
   const { rm } = await import("node:fs/promises");
   await rm(join(root, ".env.example"));
   expect((await runValidation(root)).find(({ ruleId }) => ruleId === "A-18.5.0").message).toMatch(

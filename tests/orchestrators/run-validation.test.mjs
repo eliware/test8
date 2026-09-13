@@ -36,7 +36,7 @@ async function fixture(conventions) {
   await writeFile(
     join(root, "package.json"),
     JSON.stringify({
-      name: "fixture",
+      name: "@eliware/fixture",
       version: "8.0.0",
       description: "fixture",
       author: "Eliware <eliware@eliware.org>",
@@ -61,8 +61,12 @@ async function fixture(conventions) {
       dependencies: { jest: "^30.0.0", oxlint: "^1.0.0", prettier: "^3.0.0" },
       scripts: { test: "eliware-test", lint: "eliware-test --lint" },
       eliware: {
-        conventions,
+        apply: conventions.apply,
         exempt: conventions.exempt ?? [],
+        authority: {
+          authoritativeFor: ["fixture"],
+          notAuthoritativeFor: ["runtime"],
+        },
         crosslinks: [
           {
             path: "../docs/authority-map.json",
@@ -85,7 +89,7 @@ async function fixture(conventions) {
   return root;
 }
 test("runs general checks and returns pass/fail results with exact rule IDs", async () => {
-  const root = await fixture({ version: "8.0", apply: ["general"] });
+  const root = await fixture({ apply: ["general"] });
   const results = await runValidation(root);
   expect(results.map(({ ruleId, status }) => ({ ruleId, status }))).toEqual(
     expect.arrayContaining([
@@ -133,15 +137,14 @@ test("runs general checks and returns pass/fail results with exact rule IDs", as
 });
 test("rejects impossible exemption approval dates", async () => {
   const root = await fixture({
-    version: "8.0",
     apply: ["general"],
     exempt: [
       {
         ruleId: "E-1.0",
         reason: "fixture",
         approver: "Eli",
+        approvalTimestamp: "2026-09-11T00:00:00Z",
         expiry: "2026-02-31",
-        review: "fixture",
       },
     ],
   });
@@ -161,26 +164,26 @@ test("rejects exemption dates that do not use the required format", () => {
   ).toThrow(/Every exemption/);
 });
 test("fails when the required root README is missing", async () => {
-  const root = await fixture({ version: "8.0", apply: ["general"] });
+  const root = await fixture({ apply: ["general"] });
   const { rm } = await import("node:fs/promises");
   await rm(join(root, "README.md"));
   const results = await runValidation(root);
   expect(results.find(({ ruleId }) => ruleId === "E-1.1").status).toBe("fail");
 });
 test("runs an explicitly applied cli group", async () => {
-  const root = await fixture({ version: "8.0", apply: ["application", "cli"] });
+  const root = await fixture({ apply: ["application", "cli"] });
   const results = await runValidation(root);
   expect(results.map(({ ruleId }) => ruleId)).toContain("A-18.0.0");
 });
 test("fails when the specification index is missing", async () => {
-  const root = await fixture({ version: "8.0", apply: ["general"] });
+  const root = await fixture({ apply: ["general"] });
   const { rm } = await import("node:fs/promises");
   await rm(join(root, "specs", "README.md"));
   const results = await runValidation(root);
   expect(results.find(({ ruleId }) => ruleId === "E-1.2").status).toBe("fail");
 });
 test("fails when required package identity metadata is missing", async () => {
-  const root = await fixture({ version: "8.0", apply: ["general"] });
+  const root = await fixture({ apply: ["general"] });
   const packageJson = JSON.parse(
     await (await import("node:fs/promises")).readFile(join(root, "package.json"), "utf8"),
   );
@@ -192,7 +195,7 @@ test("fails when required package identity metadata is missing", async () => {
   expect(results.find(({ ruleId }) => ruleId === "E-1.19").status).toBe("fail");
 });
 test("fails when release notes are missing", async () => {
-  const root = await fixture({ version: "8.0", apply: ["general"] });
+  const root = await fixture({ apply: ["general"] });
   const { rm } = await import("node:fs/promises");
   await rm(join(root, "RELEASE_NOTES.md"));
   const results = await runValidation(root);

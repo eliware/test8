@@ -1,7 +1,10 @@
 import { fail, pass } from "../check-result.mjs";
 export const ruleId = "A-1.9.1";
 export function run({ packageJson }) {
-  return packageJson?.eliware?.conventions?.version
+  return typeof packageJson?.version === "string" &&
+    /^\d+\.\d+\.\d+$/.test(packageJson.version) &&
+    Array.isArray(packageJson?.eliware?.apply) &&
+    packageJson.eliware.apply.length > 0
     ? pass(ruleId)
-    : fail(ruleId, "eliware.conventions.version is required.");
+    : fail(ruleId, "package.json version and eliware.apply must identify the convention baseline.");
 }

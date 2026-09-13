@@ -1,13 +1,13 @@
 export function readConventionConfig(packageJson) {
-  const conventions = packageJson?.eliware?.conventions;
-  if (!conventions || !Array.isArray(conventions.apply)) {
-    throw new Error("package.json must define eliware.conventions.apply.");
+  const apply = packageJson?.eliware?.apply;
+  if (!Array.isArray(apply) || apply.length === 0) {
+    throw new Error("package.json must define eliware.apply.");
   }
-  if (conventions.version !== "8.0") {
-    throw new Error("eliware.conventions.version must be 8.0.");
+  if (apply.some((group) => typeof group !== "string" || group.length === 0)) {
+    throw new Error("eliware.apply must be an array of group names.");
   }
-  if (conventions.apply.includes("node")) {
+  if (apply.includes("node")) {
     throw new Error("Unknown convention group: node");
   }
-  return conventions;
+  return { apply };
 }
