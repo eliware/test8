@@ -6,13 +6,13 @@ import { validateExemptionIds } from "./validate-exemption-ids.mjs";
 import { executeConventionChecks } from "./execute-convention-checks.mjs";
 import { readPackageJson } from "../cli/read-package-json.mjs";
 
-export async function runValidation(root, ignoredRuleIds = []) {
+export async function runValidation(root, ignoredRuleIds = [], options = {}) {
   const packageJson = await readPackageJson(root);
   const conventions = readConventionConfig(packageJson);
   const allChecks = await discoverAllChecks();
   const checks = await selectConventionChecks(conventions);
   validateExemptionIds(packageJson, allChecks);
   const exemptions = readExemptions(packageJson);
-  const context = { root, packageJson };
+  const context = { root, packageJson, executeJest: options.executeJest === true };
   return executeConventionChecks(checks, context, new Set([...exemptions, ...ignoredRuleIds]));
 }

@@ -9,6 +9,7 @@ export async function runCli(
   args,
   write = console.log,
   root = process.cwd(),
+  options = {},
 ) {
   if (args.includes("--version")) {
     write(packageMetadata.version);
@@ -24,7 +25,9 @@ export async function runCli(
     const startedAt = Date.now();
     const diagnosticOptions = readDiagnosticOptions(args);
     const result = await runConventionStage(() =>
-      runValidation(root, diagnosticOptions.ignoredRuleIds),
+      runValidation(root, diagnosticOptions.ignoredRuleIds, {
+        executeJest: options.executeJest !== false,
+      }),
     );
     writeStageDiagnostics(result, write);
     writeDebugTiming(write, startedAt, args.includes("--debug-timing"));

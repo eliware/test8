@@ -174,7 +174,7 @@ test("retains the general check when the specification index is missing", async 
   const root = await fixture({ apply: ["general"] });
   await (await import("node:fs/promises")).rm(join(root, "specs", "README.md"));
   const results = await runValidation(root);
-  expect(results.find(({ ruleId }) => ruleId === "E-1.2").status).toBe("pass");
+  expect(results.find(({ ruleId }) => ruleId === "E-1.2").status).toBe("fail");
 });
 test("fails when required package identity metadata is missing", async () => {
   const root = await fixture({ apply: ["general"] });

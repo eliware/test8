@@ -15,6 +15,7 @@ async function fixture(withConfiguration = true) {
       ...(withConfiguration ? { eliware: { apply: ["general"] } } : {}),
     }),
   );
+  await writeFile(join(root, "README.md"), "# fixture\n");
   await writeFile(join(root, "AGENTS.md"), "eliware/docs eliware/conventions eliware/operations\n");
   await mkdir(join(root, "specs"));
   await writeFile(join(root, "specs", "README.md"), "# specs\n");
@@ -24,7 +25,9 @@ async function fixture(withConfiguration = true) {
 test("returns success for a configured convention validation run", async () => {
   const root = await fixture();
   const output = [];
-  await expect(runCli([], (value) => output.push(value), root)).resolves.toBe(0);
+  await expect(
+    runCli([], (value) => output.push(value), root, { executeJest: false }),
+  ).resolves.toBe(0);
   expect(output).toEqual([]);
 });
 

@@ -1,4 +1,4 @@
-import { mkdtemp, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { expect, test } from "@jest/globals";
@@ -21,10 +21,15 @@ test("reports the convention-only help contract", async () => {
 
 test("runs convention validation and reports debug timing when requested", async () => {
   const root = await mkdtemp(join(tmpdir(), "eliware-test8-cli-"));
+  await writeFile(join(root, "README.md"), "# fixture\n");
   await writeFile(join(root, "AGENTS.md"), "eliware/docs eliware/conventions eliware/operations\n");
+  await mkdir(join(root, "specs"));
+  await writeFile(join(root, "specs", "README.md"), "# specs\n");
   await writeFile(join(root, "package.json"), JSON.stringify({ eliware: { apply: ["general"] } }));
   const output = [];
-  await expect(runCli(["--debug-timing"], (value) => output.push(value), root)).resolves.toBe(0);
+  await expect(
+    runCli(["--debug-timing"], (value) => output.push(value), root, { executeJest: false }),
+  ).resolves.toBe(0);
   expect(output).toHaveLength(1);
   expect(output[0]).toMatch(/^Validation time: \d+ms$/);
 });
@@ -32,7 +37,9 @@ test("runs convention validation and reports debug timing when requested", async
 test("fails when package metadata cannot be read", async () => {
   const output = [];
   await expect(
-    runCli([], (value) => output.push(value), "C:/path-that-does-not-exist"),
+    runCli([], (value) => output.push(value), "C:/path-that-does-not-exist", {
+      executeJest: false,
+    }),
   ).resolves.toBe(18);
   expect(output).toHaveLength(1);
   expect(output[0]).toMatch(/package\.json|ENOENT/i);
@@ -42,6 +49,8 @@ test("fails fast when package.json.eliware is absent", async () => {
   const root = await mkdtemp(join(tmpdir(), "eliware-test8-no-meta-"));
   await writeFile(join(root, "package.json"), JSON.stringify({ name: "fixture" }));
   const output = [];
-  await expect(runCli([], (value) => output.push(value), root)).resolves.toBe(18);
+  await expect(runCli([], (value) => output.push(value), root, { executeJest: false })).resolves.toBe(
+    18,
+  );
   expect(output).toEqual(["package.json.eliware is required for Eliware validation."]);
 });
