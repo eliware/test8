@@ -31,12 +31,14 @@ async function trackedPaths(root) {
   }
 }
 
-export async function run({ root }) {
+export async function run({ root, packageJson }) {
   const findings = [];
   try {
     const tracked = await trackedPaths(root);
     if (tracked) {
-      findings.push(...tracked.filter((path) => path.split("/").some((part) => forbidden.test(part)) && !path.endsWith(".env.example")));
+      const exemptions = packageJson?.eliware?.exempt ?? [];
+      const allowed = new Set(exemptions.filter((entry) => entry.ruleId === ruleId && typeof entry.path === "string").map((entry) => entry.path.replaceAll("\\", "/")));
+      findings.push(...tracked.filter((path) => path.split("/").some((part) => forbidden.test(part)) && !path.endsWith(".env.example") && !allowed.has(path)));
     } else {
       await collect(root, root, findings);
     }
