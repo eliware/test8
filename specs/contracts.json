@@ -261,8 +261,8 @@
         "invariants": ["Focused selection does not add profiles or change exemption evaluation."],
         "boundaries": { "owns": ["Focused validation selection"], "doesNotOwn": ["Convention profile definitions"] }
       },
-      "implementation": {"source": ["src/cli/run-cli.mjs"]},
-      "verification": {"tests": ["tests/cli/run-cli.test.mjs"], "commands": ["npm test"]}
+      "implementation": {"source": ["src/cli/run-cli.mjs", "src/checks/general/E-1/E-1.20/run-jest.mjs"]},
+      "verification": {"tests": ["tests/cli/run-cli.test.mjs", "tests/checks/general/E-1/E-1.20/run-jest.test.mjs"], "commands": ["npm test"]}
     },
     {
       "id": "C-18.9",
@@ -280,8 +280,8 @@
         "invariants": ["Any metric other than exactly 100 appears in gaps.", "The four metrics are never collapsed into one aggregate percentage."],
         "boundaries": { "owns": ["Coverage reporting"], "doesNotOwn": ["Coverage instrumentation"] }
       },
-      "implementation": {"source": []},
-      "verification": {"tests": [], "commands": ["npm test"]}
+      "implementation": {"source": ["src/checks/general/E-1/E-1.20.mjs", "src/checks/general/E-1/E-1.20/E-1.20.10.mjs", "src/checks/general/E-1/E-1.20/E-1.20.10/coverage-evidence.mjs", "src/checks/general/E-1/E-1.20/E-1.20.10/coverage-parsers.mjs", "src/checks/general/E-1/E-1.20/E-1.20.10/format-coverage-gaps.mjs"]},
+      "verification": {"tests": ["tests/checks/general/E-1/E-1.20.test.mjs", "tests/checks/general/E-1/E-1.20/E-1.20.10.test.mjs"], "commands": ["npm test"]}
     },
     {
       "id": "C-18.10",
@@ -299,7 +299,7 @@
         "invariants": ["External state is not mutated by validation.", "Sensitive values are excluded from diagnostics."],
         "boundaries": { "owns": ["Validation safety and diagnostics"], "doesNotOwn": ["Secrets management"] }
       },
-      "implementation": {"source": ["src/cli/run-cli.mjs", "src/orchestrators/run-convention-stage.mjs"]},
+      "implementation": {"source": ["src/cli/run-cli.mjs", "src/orchestrators/run-convention-stage.mjs", "src/checks/general/E-1/E-1.20/run-jest.mjs", "src/checks/general/E-1/E-1.20/run-npm-audit.mjs", "src/checks/npm-published/E-1.140/run-npm-pack.mjs", "src/checks/general/E-1/E-1.4/run-oxlint.mjs"]},
       "verification": {"tests": ["tests/cli/run-cli.test.mjs", "tests/orchestrators/run-convention-stage.test.mjs"], "commands": ["npm test"]}
     },
     {
