@@ -1,5 +1,5 @@
-import { readdir, readFile } from "node:fs/promises";
-import { join, resolve } from "node:path";
+import { access, readdir, readFile } from "node:fs/promises";
+import { join, relative, resolve } from "node:path";
 import { fail, pass } from "../../../../check-result.mjs";
 
 export const ruleId = "A-1.25.0.0";
@@ -29,10 +29,12 @@ export async function run({ root }) {
         for (const child of Object.values(value)) visit(child);
       };
       visit(document);
-      for (const reference of references.filter((value) => value.startsWith("./"))) {
+      for (const reference of references.filter((value) => value.startsWith("./") || value.startsWith("../"))) {
         const target = resolve(join(file, ".."), reference);
+        const fromRoot = relative(root, target);
+        if (fromRoot.startsWith("..") || fromRoot.includes(":")) continue;
         try {
-          await readFile(target);
+          await access(target);
         } catch {
           return fail(ruleId, `Structured reference does not resolve: ${reference} in ${file}.`);
         }

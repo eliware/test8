@@ -10,6 +10,10 @@ test("resolves local structured references", async () => {
   await writeFile(join(root, "specs", "target.json"), "{}");
   await writeFile(join(root, "specs", "source.json"), JSON.stringify({ crosslink: { path: "./target.json" } }));
   expect((await run({ root })).status).toBe("pass");
+  await mkdir(join(root, "records"));
+  await writeFile(join(root, "records", "target.json"), "{}");
+  await writeFile(join(root, "specs", "source.json"), JSON.stringify({ crosslink: { path: "../records/target.json" } }));
+  expect((await run({ root })).status).toBe("pass");
   await writeFile(join(root, "specs", "source.json"), JSON.stringify({ crosslink: { path: "./missing.json" } }));
   expect((await run({ root })).status).toBe("fail");
 });
