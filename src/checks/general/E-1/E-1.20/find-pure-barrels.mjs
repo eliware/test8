@@ -29,7 +29,13 @@ async function sourceFiles(directory) {
 }
 
 export async function findPureBarrels(root) {
-  const files = await sourceFiles(join(root, "src"));
+  let files;
+  try {
+    files = await sourceFiles(join(root, "src"));
+  } catch (error) {
+    if (error.code === "ENOENT") return [];
+    throw error;
+  }
   const barrels = [];
   for (const file of files) {
     if (isPureBarrelSource(await readFile(file, "utf8"))) {
