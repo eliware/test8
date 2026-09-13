@@ -6,7 +6,7 @@ export async function fixture(conventions) {
   const root = await mkdtemp(join(tmpdir(), "eliware-test8-"));
   await mkdir(join(root, "src", "checks", "general"), { recursive: true });
   await mkdir(join(root, "tests"), { recursive: true });
-  await writeFile(join(root, "AGENTS.md"), "# fixture repository purpose\nScope boundaries repository-wide subdirectory instructions. Read README.md and applicable documentation before changes. Validation commands. Security secrets. Web routes assets configuration browser deployment ports. Application configuration connection shutdown workflow. CLI entrypoint commands validation platform. eliware/docs eliware/conventions eliware/operations\n");
+  await writeFile(join(root, "AGENTS.md"), "# fixture repository purpose\nNode.js 26 native ESM .mjs module environment validation. Scope boundaries repository-wide subdirectory instructions. Read README.md and applicable documentation before changes. Validation commands. Security secrets. Web routes assets configuration browser deployment ports. Application configuration connection shutdown workflow. CLI entrypoint commands validation platform. eliware/docs eliware/conventions eliware/operations\n");
   await writeFile(join(root, "README.md"), "# [![eliware.org](https://eliware.org/logos/brand.png)](https://github.com/eliware/fixture)\n\n# fixture\n\n## Purpose\nfixture\n## Requirements\nfixture\n## Setup\nfixture\n## Configuration\nfixture\n## Usage\nfixture\n## Validation\nfixture\n## Operations\nfixture\n## Security\nfixture\n## Support\nfixture\n## License\n[license](LICENSE) https://www.npmjs.com/package/@eliware/fixture\n[Release notes](RELEASE_NOTES.md)\n");
   await writeFile(join(root, "RELEASE_NOTES.md"), "# Release notes\n## 8.0.0\n");
   await writeFile(join(root, "LICENSE"), "MIT License\nCopyright (c) 2026 Eliware\n");
@@ -17,7 +17,8 @@ export async function fixture(conventions) {
   await mkdir(join(root, "examples"), { recursive: true });
   await writeFile(join(root, "examples", "README.md"), "# examples\n");
   await mkdir(join(root, "specs"), { recursive: true });
-  await writeFile(join(root, "specs", "README.md"), "# specs\n- [contracts.json](contracts.json)\n");
+  await writeFile(join(root, "specs", "README.md"), "# specs\n- [authority.json](authority.json)\n- [directives.json](directives.json)\n- [contracts.json](contracts.json)\n");
+  await writeFile(join(root, "specs", "authority.json"), "{}");
   await writeFile(join(root, "specs", "directives.json"), JSON.stringify({ directives: [{ id: "E-1", directives: [] }] }));
   await writeFile(join(root, "specs", "contracts.json"), JSON.stringify({ schemaVersion: "1.0", contractVersion: "8.0", kind: "contract-reference", description: "fixture", authority: {}, format: {}, contracts: [{ id: "C-1.1", title: "fixture", scope: "test", directiveIds: ["E-1.25"], dos: [], donts: [], contract: { purpose: "", inputs: [], outputs: [], errors: [], ordering: [], invariants: [], boundaries: {} }, implementation: {}, verification: {} }] }));
   await mkdir(join(root, ".github", "workflows"), { recursive: true });
