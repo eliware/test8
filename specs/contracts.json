@@ -299,8 +299,8 @@
         "invariants": ["External state is not mutated by validation.", "Sensitive values are excluded from diagnostics."],
         "boundaries": { "owns": ["Validation safety and diagnostics"], "doesNotOwn": ["Secrets management"] }
       },
-      "implementation": {"source": ["src/cli/run-cli.mjs", "src/orchestrators/run-convention-stage.mjs", "src/checks/general/E-1/E-1.20/run-jest.mjs", "src/checks/general/E-1/E-1.20/run-npm-audit.mjs", "src/checks/npm-published/E-1.140/run-npm-pack.mjs", "src/checks/general/E-1/E-1.4/run-oxlint.mjs"]},
-      "verification": {"tests": ["tests/cli/run-cli.test.mjs", "tests/orchestrators/run-convention-stage.test.mjs"], "commands": ["npm test"]}
+      "implementation": {"source": ["src/cli/run-cli.mjs", "src/orchestrators/run-convention-stage.mjs", "src/checks/general/E-1/E-1.20/run-jest.mjs", "src/checks/general/E-1/E-1.20/run-npm-audit.mjs", "src/checks/npm-published/E-1.140/run-npm-pack.mjs", "src/checks/general/E-1/E-1.4/run-oxlint.mjs", "src/checks/run-prettier.mjs"]},
+      "verification": {"tests": ["tests/cli/run-cli.test.mjs", "tests/orchestrators/run-convention-stage.test.mjs", "tests/checks/run-prettier.test.mjs"], "commands": ["npm test"]}
     },
     {
       "id": "C-18.11",

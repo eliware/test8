@@ -31,6 +31,7 @@ export async function runCli(
         executeAudit: options.executeAudit ?? options.executeJest ?? true,
         executePack: options.executePack ?? options.executeJest ?? true,
         executePackageChecks: options.executePackageChecks ?? options.executeJest ?? true,
+        executeFormat: options.executeFormat ?? options.executeJest ?? true,
         mode: diagnosticOptions.mode,
         jestArgs: diagnosticOptions.jestArgs,
       }),
