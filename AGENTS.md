@@ -69,6 +69,9 @@ and `specs/` before changing files.
   do not add v8 behavior to the older reference repository.
 - Preserve stable rule IDs, deterministic diagnostics, and the public CLI
   boundary.
+- Keep instructions actionable, current, and concise. Project-specific rules
+  may add detail without weakening the shared conventions; record approved
+  deviations explicitly.
 - Web, library, and application repositories have additional documentation
   requirements described in the applicable conventions.
 

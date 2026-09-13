@@ -1,8 +1,8 @@
-import { pass } from "../../../check-result.mjs";
+import { checkAgents } from "../../agents-content.mjs";
 
 export const ruleId = "A-1.0.11";
 export const parentRuleId = "E-1.0";
 
-export function run() {
-  return pass(ruleId);
+export function run({ root }) {
+  return checkAgents(root, ruleId, [["required"], ["structure"]]);
 }
