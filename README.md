@@ -58,7 +58,7 @@ deploy, publish, release, or destructive repository operation.
 ## Configuration
 
 Repository convention applicability is declared in `package.json` under
-`eliware.conventions`. Test-specific directives are documented in
+`eliware.apply`. Test-specific directives are documented in
 [specs/directives.json](specs/directives.json).
 
 ## Validation

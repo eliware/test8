@@ -43,13 +43,14 @@
     "access": "public",
     "provenance": true
   },
+  "private": false,
   "scripts": {
     "test": "node bin/eliware-test.mjs",
     "lint": "node bin/eliware-test.mjs --lint",
     "format": "node bin/eliware-test.mjs --format",
     "format:check": "node bin/eliware-test.mjs --format-check",
-    "audit": "node bin/run-audit.mjs",
-    "pack": "eliware-test --pack"
+    "audit": "node bin/eliware-test.mjs --audit",
+    "pack": "node bin/eliware-test.mjs --pack"
   },
   "prettier": {
     "printWidth": 100,
@@ -106,6 +107,20 @@
         "approvalTimestamp": "2026-09-11T00:00:00Z",
         "expiry": null,
         "review": "Review when @eliware/test can consume its published eliware-test command without self-hosting."
+      },
+      {
+        "ruleId": "E-1.20.10",
+        "reason": "@eliware/test is temporarily below the 100x4 coverage requirement during the v8 harness migration.",
+        "approver": "Eli",
+        "approvalTimestamp": "2026-09-13T00:00:00Z",
+        "expiry": "2026-09-30"
+      },
+      {
+        "ruleId": "E-1.140.1",
+        "reason": "@eliware/test must self-host its pack validation while it is being built and cannot invoke its own published eliware-test command.",
+        "approver": "Eli",
+        "approvalTimestamp": "2026-09-13T00:00:00Z",
+        "expiry": null
       }
     ],
     "authority": {

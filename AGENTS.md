@@ -20,8 +20,8 @@ and `specs/` before changing files.
 - `eliware/operations` is authoritative for release, deployment, and other
   cross-cutting operational procedures.
 - Read `../docs/authority-map.json`, `../conventions/specs/`,
-  `../operations/records.json`, and the relevant local specification before
-  changing governance files.
+  `../operations/specs/directives.json`, and the relevant local specification
+  before changing governance files.
 - This repository's `specs/directives.json` is authoritative only for the
   validator harness contract; it does not define repository requirements,
   exemptions, publication policy, deployment, or operations.
