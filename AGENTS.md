@@ -108,6 +108,8 @@ and `specs/` before changing files.
   explicit authorization for the current task.
 - The CLI performs no deploy, publish, release, or destructive repository
   operation.
+- Public npm publication requirements are governed by the applied
+  `npm-published` convention profile and the Operations release runbook.
 
 ## Subdirectory instructions
 
