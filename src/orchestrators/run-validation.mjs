@@ -20,6 +20,7 @@ export async function runValidation(root, ignoredRuleIds = [], options = {}) {
     executeLint: options.executeLint === true,
     executeAudit: options.executeAudit === true,
     executePack: options.executePack === true,
+    executePackageChecks: options.executePackageChecks === true,
     mode: options.mode ?? null,
     jestArgs: options.jestArgs ?? [],
   };
