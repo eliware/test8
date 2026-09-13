@@ -27,6 +27,7 @@ export async function runCli(
     const result = await runConventionStage(() =>
       runValidation(root, diagnosticOptions.ignoredRuleIds, {
         executeJest: options.executeJest !== false,
+        jestArgs: diagnosticOptions.jestArgs,
       }),
     );
     writeStageDiagnostics(result, write);

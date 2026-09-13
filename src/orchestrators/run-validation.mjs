@@ -13,6 +13,11 @@ export async function runValidation(root, ignoredRuleIds = [], options = {}) {
   const checks = await selectConventionChecks(conventions);
   validateExemptionIds(packageJson, allChecks);
   const exemptions = readExemptions(packageJson);
-  const context = { root, packageJson, executeJest: options.executeJest === true };
+  const context = {
+    root,
+    packageJson,
+    executeJest: options.executeJest === true,
+    jestArgs: options.jestArgs ?? [],
+  };
   return executeConventionChecks(checks, context, new Set([...exemptions, ...ignoredRuleIds]));
 }
