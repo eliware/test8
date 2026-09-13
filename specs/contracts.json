@@ -65,6 +65,7 @@
         "Do not perform repository validation for informational commands."
       ],
       "contract": {
+        "purpose": "Define the public Test8 entry behavior for informational CLI commands.",
         "inputs": {
           "args": "An ordered array of CLI argument strings.",
           "write": "Optional function receiving one output string at a time.",
@@ -98,6 +99,7 @@
         "Do not erase an earlier diagnostic when a later operation fails."
       ],
       "contract": {
+        "purpose": "Define how Test8 runs validation and exposes diagnostics.",
         "inputs": {"args": "CLI arguments after informational handling.", "root": "The target repository path."},
         "outputs": {"stage": "{ code, category: 'conventions', diagnostics }"},
         "errors": ["Thrown orchestration errors become code 18 with their message as a diagnostic."],
@@ -120,6 +122,7 @@
       ],
       "donts": ["Do not start check execution with missing, malformed, empty, or unknown harness configuration."],
       "contract": {
+        "purpose": "Define explicit loading and interpretation of repository validation configuration.",
         "inputs": {"packageJson": "Parsed target package metadata."},
         "outputs": {"configuration": "{ apply: string[] } with validated harness applicability."},
         "errors": ["Missing or malformed configuration throws a descriptive configuration error."],
@@ -142,6 +145,7 @@
       ],
       "donts": ["Do not fetch a private conventions repository or silently overwrite duplicate or malformed checks."],
       "contract": {
+        "purpose": "Define discovery and identity checks for bundled convention modules.",
         "inputs": {"profiles": "Ordered profile names.", "options": "Optional injectable root, directory reader, and module importer."},
         "outputs": {"checks": "Ordered records containing ruleId, optional parentRuleId, and run."},
         "errors": ["Unknown profile, duplicate rule ID, invalid module export, or invalid rule filename fails discovery."],
@@ -160,6 +164,7 @@
       "dos": ["Require every check to return one result with its exact rule ID and a pass or fail status.", "Supply checks with the target root and parsed package metadata."],
       "donts": ["Do not expose warning, skipped, unknown, partial, or not-applicable result states."],
       "contract": {
+        "purpose": "Define the stable result shape and context passed between checks and orchestration.",
         "inputs": {"context": "{ root, packageJson } unless a documented extension adds more fields."},
         "outputs": {"checkResult": "{ ruleId: string, status: 'pass'|'fail', message: string }"},
         "errors": ["A missing, malformed, or mismatched result throws an invalid-check-result error."],
@@ -182,6 +187,7 @@
       ],
       "donts": ["Do not let check modules infer applicability or exemption state, and do not let an unknown exemption silently skip work."],
       "contract": {
+        "purpose": "Define profile selection and ancestor-aware exemption evaluation.",
         "inputs": {"checks": "Selected discovered checks.", "context": "Validation context.", "exemptions": "Set of validated rule IDs."},
         "outputs": {"results": "Non-exempt CheckResults in deterministic execution order."},
         "errors": ["Unknown exemption IDs and thrown check errors fail validation."],
@@ -200,6 +206,7 @@
       "dos": ["Aggregate all failed-check diagnostics deterministically.", "Use stable exit categories and preserve every diagnostic."],
       "donts": ["Do not convert an unknown, skipped, partial, or failed required operation into success."],
       "contract": {
+        "purpose": "Define aggregation of validation outcomes and process exit behavior.",
         "inputs": {"runChecks": "Async callback returning CheckResults."},
         "outputs": {"stage": "{ code, category: 'conventions', diagnostics: string[] }"},
         "errors": ["A thrown callback error produces code 18 and one safe diagnostic."],
@@ -218,6 +225,7 @@
       "dos": ["Expose focused testing through the public harness boundary.", "Reject missing or ambiguous focused paths before unrelated execution.", "Scope coverage to an unambiguous mirrored source mapping."],
       "donts": ["Do not silently fall back to the full suite or report unrelated-module coverage failures for a focused request."],
       "contract": {
+        "purpose": "Define targeted execution without changing normal profile or exemption semantics.",
         "inputs": {"focusedPaths": "Recognized test paths supplied through the public invocation."},
         "outputs": {"scope": "Only requested tests and unambiguously mapped source coverage are selected."},
         "errors": ["Unsupported, missing, or ambiguous paths produce the stable convention failure result."],
@@ -236,6 +244,7 @@
       "dos": ["Evaluate statements, branches, functions, and lines independently against exactly 100.", "Accept usable JSON totals or a usable Jest text summary fallback.", "Reject stale, changing, invalid, missing, or zero-valued evidence as appropriate."],
       "donts": ["Do not treat missing instrumented entries or incomplete metrics as successful coverage."],
       "contract": {
+        "purpose": "Define the four-dimensional coverage summary and its gap reporting.",
         "inputs": {"summary": "Coverage metric object or report reader inputs.", "report": "Optional report path and freshness clock/stat seams."},
         "outputs": {"evaluation": "{ status: 'pass'|'fail', gaps: string[] }", "summary": "{ statements, branches, functions, lines }"},
         "errors": ["Invalid or stale reports throw descriptive coverage errors."],
@@ -254,6 +263,7 @@
       "dos": ["Use Node child-process APIs and argument arrays.", "Bound captured output and preserve actionable failure context.", "Keep validation read-only with respect to external systems."],
       "donts": ["Do not depend on shell pipelines, shell quoting, platform-specific executable assumptions, or unbounded output capture.", "Do not publish, deploy, release, synchronize, tag, or push during validation."],
       "contract": {
+        "purpose": "Define safety limits for process interaction, external state, and diagnostics.",
         "inputs": {"command": "Executable and argument array supplied to a process adapter."},
         "outputs": {"process": "Bounded stdout/stderr and normalized process status."},
         "errors": ["Spawn, timeout, nonzero status, and output-limit failures preserve safe context."],
@@ -272,6 +282,7 @@
       "dos": ["Keep orchestrators responsible for composition, ordering, and dependency injection.", "Keep check and process modules responsible for their own focused business logic.", "Allow filesystem, process, clock, and package seams to be injected for deterministic verification."],
       "donts": ["Do not make a coordinator absorb unrelated check logic or require consumers to import internal orchestration modules."],
       "contract": {
+        "purpose": "Define focused module composition boundaries for the validation harness.",
         "inputs": {"dependencies": "Explicit functions or adapters supplied at composition boundaries."},
         "outputs": {"pipeline": "Stable stage or check results without hidden side effects."},
         "errors": ["Dependency failures retain their original safe context."],
@@ -290,6 +301,7 @@
       "dos": ["Keep each contract individually identifiable and traceable to implementation and verification evidence.", "Use tests as evidence that contracts are fulfilled, not as the source of contract truth.", "Keep contract references repository-relative and reviewable."],
       "donts": ["Do not let implementation behavior or a passing test silently redefine a contract."],
       "contract": {
+        "purpose": "Define how Test8 contracts remain traceable to directives, implementation, and verification.",
         "inputs": {"contract": "One atomic record from this file.", "evidence": "Optional implementation and verification references."},
         "outputs": {"traceability": "A reviewer can identify the responsible implementation and verification evidence for each contract."},
         "errors": ["Missing or invalid contract references are documentation/contract review failures."],
