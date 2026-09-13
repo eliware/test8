@@ -1,8 +1,11 @@
-import { pass } from "../../../check-result.mjs";
+import { fail, pass } from "../../../check-result.mjs";
 
 export const ruleId = "E-1.20.19";
 export const parentRuleId = "E-1.20";
 
-export function run() {
+export function run({ packageJson }) {
+  if (packageJson?.scripts?.audit !== "eliware-test --audit") {
+    return fail(ruleId, "The aggregate validation must execute the shared audit stage through npm run audit.");
+  }
   return pass(ruleId);
 }
