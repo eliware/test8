@@ -30,7 +30,7 @@
     "exemptedCheck": "A selected check excluded by its own exemption or an exemption on an ancestor rule.",
     "diagnostic": "A stable human-readable description of a validation failure or internal validation error."
   },
-  "contractConventions": {
+  "format": {
     "requiredFields": [
       "id",
       "title",
@@ -77,7 +77,8 @@
         },
         "errors": ["Informational command failures are reported through the normal harness failure boundary."],
         "ordering": ["Recognize --version/--help before validation or stage execution."],
-        "invariants": ["Informational commands return 0 when their output is written successfully."]
+        "invariants": ["Informational commands return 0 when their output is written successfully."],
+        "boundaries": { "owns": ["Test8 CLI informational dispatch"], "doesNotOwn": ["Repository conventions", "Release or deployment policy"] }
       },
       "implementation": {"source": ["bin/eliware-test.mjs", "src/cli/run-cli.mjs"]},
       "verification": {"tests": ["tests/cli/run-cli.test.mjs"], "commands": ["npm test"]}
@@ -101,7 +102,8 @@
         "outputs": {"stage": "{ code, category: 'conventions', diagnostics }"},
         "errors": ["Thrown orchestration errors become code 18 with their message as a diagnostic."],
         "ordering": ["Read options, run validation, write stage diagnostics, then write optional timing."],
-        "invariants": ["Successful validation returns code 0 and an empty diagnostics list."]
+        "invariants": ["Successful validation returns code 0 and an empty diagnostics list."],
+        "boundaries": { "owns": ["Test8 validation execution"], "doesNotOwn": ["Project implementation"] }
       },
       "implementation": {"source": ["src/cli/read-diagnostic-options.mjs", "src/cli/write-stage-diagnostics.mjs", "src/cli/write-debug-timing.mjs", "src/orchestrators/run-convention-stage.mjs"]},
       "verification": {"tests": ["tests/cli/run-cli.test.mjs", "tests/orchestrators/run-convention-stage.test.mjs"], "commands": ["npm test"]}
@@ -122,7 +124,8 @@
         "outputs": {"configuration": "{ apply: string[] } with validated harness applicability."},
         "errors": ["Missing or malformed configuration throws a descriptive configuration error."],
         "ordering": ["Configuration validation precedes check discovery for selection and check execution."],
-        "invariants": ["No profile is implicitly added."]
+        "invariants": ["No profile is implicitly added."],
+        "boundaries": { "owns": ["Convention profile selection"], "doesNotOwn": ["Convention applicability policy"] }
       },
       "implementation": {"source": ["src/cli/read-package-json.mjs", "src/orchestrators/read-convention-config.mjs"]},
       "verification": {"tests": ["tests/orchestrators/run-validation.test.mjs", "tests/cli/validation-cli.test.mjs"], "commands": ["npm test"]}
@@ -143,7 +146,8 @@
         "outputs": {"checks": "Ordered records containing ruleId, optional parentRuleId, and run."},
         "errors": ["Unknown profile, duplicate rule ID, invalid module export, or invalid rule filename fails discovery."],
         "ordering": ["Sort by numeric rule components, using lexical comparison only as a final tie-breaker."],
-        "invariants": ["A module filename and exported ruleId always identify the same rule.", "Parentage is derived from containing rule-named directories."]
+        "invariants": ["A module filename and exported ruleId always identify the same rule.", "Parentage is derived from containing rule-named directories."],
+        "boundaries": { "owns": ["Check discovery and selection"], "doesNotOwn": ["Check behavior"] }
       },
       "implementation": {"source": ["src/orchestrators/discover-checks.mjs", "src/orchestrators/select-convention-checks.mjs"]},
       "verification": {"tests": ["tests/orchestrators/run-validation-configuration.test.mjs", "tests/cli/validation-cli-metadata.test.mjs"], "commands": ["npm test"]}
@@ -160,7 +164,8 @@
         "outputs": {"checkResult": "{ ruleId: string, status: 'pass'|'fail', message: string }"},
         "errors": ["A missing, malformed, or mismatched result throws an invalid-check-result error."],
         "ordering": ["Result validation occurs immediately after each check returns."],
-        "invariants": ["Check modules do not mutate shared orchestration state to communicate results."]
+        "invariants": ["Check modules do not mutate shared orchestration state to communicate results."],
+        "boundaries": { "owns": ["Check result execution"], "doesNotOwn": ["Repository state mutation"] }
       },
       "implementation": {"source": ["src/checks/check-result.mjs", "src/orchestrators/run-validation.mjs"]},
       "verification": {"tests": ["tests/checks/check-result.test.mjs", "tests/cli/validation-cli-metadata.test.mjs"], "commands": ["npm test"]}
@@ -181,7 +186,8 @@
         "outputs": {"results": "Non-exempt CheckResults in deterministic execution order."},
         "errors": ["Unknown exemption IDs and thrown check errors fail validation."],
         "ordering": ["Check ancestors are evaluated for exemption before the check runs.", "Checks run sequentially in discovery order."],
-        "invariants": ["An exact exemption excludes no sibling branch.", "An ancestor exemption excludes all discovered descendants."]
+        "invariants": ["An exact exemption excludes no sibling branch.", "An ancestor exemption excludes all discovered descendants."],
+        "boundaries": { "owns": ["Exemption evaluation"], "doesNotOwn": ["Exemption approval authority"] }
       },
       "implementation": {"source": ["src/orchestrators/read-exemptions.mjs", "src/orchestrators/validate-exemption-records.mjs", "src/orchestrators/validate-exemption-ids.mjs", "src/orchestrators/execute-convention-checks.mjs"]},
       "verification": {"tests": ["tests/orchestrators/exemptions.test.mjs", "tests/orchestrators/run-validation-configuration.test.mjs"], "commands": ["npm test"]}
@@ -198,7 +204,8 @@
         "outputs": {"stage": "{ code, category: 'conventions', diagnostics: string[] }"},
         "errors": ["A thrown callback error produces code 18 and one safe diagnostic."],
         "ordering": ["Failure diagnostics follow check result order."],
-        "invariants": ["All-pass results produce code 0 and no diagnostics.", "Any failed check produces code 18."]
+        "invariants": ["All-pass results produce code 0 and no diagnostics.", "Any failed check produces code 18."],
+        "boundaries": { "owns": ["Validation result aggregation"], "doesNotOwn": ["Project quality decisions"] }
       },
       "implementation": {"source": ["src/orchestrators/run-convention-stage.mjs", "src/cli/write-stage-diagnostics.mjs"]},
       "verification": {"tests": ["tests/orchestrators/run-convention-stage.test.mjs", "tests/cli/run-cli.test.mjs"], "commands": ["npm test"]}
@@ -215,7 +222,8 @@
         "outputs": {"scope": "Only requested tests and unambiguously mapped source coverage are selected."},
         "errors": ["Unsupported, missing, or ambiguous paths produce the stable convention failure result."],
         "ordering": ["Path validation precedes test execution."],
-        "invariants": ["Focused selection does not add profiles or change exemption evaluation."]
+        "invariants": ["Focused selection does not add profiles or change exemption evaluation."],
+        "boundaries": { "owns": ["Focused validation selection"], "doesNotOwn": ["Convention profile definitions"] }
       },
       "implementation": {"source": ["src/cli/run-cli.mjs"]},
       "verification": {"tests": ["tests/cli/run-cli.test.mjs"], "commands": ["npm test"]}
@@ -232,7 +240,8 @@
         "outputs": {"evaluation": "{ status: 'pass'|'fail', gaps: string[] }", "summary": "{ statements, branches, functions, lines }"},
         "errors": ["Invalid or stale reports throw descriptive coverage errors."],
         "ordering": ["Freshness is checked before and during report reading."],
-        "invariants": ["Any metric other than exactly 100 appears in gaps.", "The four metrics are never collapsed into one aggregate percentage."]
+        "invariants": ["Any metric other than exactly 100 appears in gaps.", "The four metrics are never collapsed into one aggregate percentage."],
+        "boundaries": { "owns": ["Coverage reporting"], "doesNotOwn": ["Coverage instrumentation"] }
       },
       "implementation": {"source": []},
       "verification": {"tests": [], "commands": ["npm test"]}
@@ -249,7 +258,8 @@
         "outputs": {"process": "Bounded stdout/stderr and normalized process status."},
         "errors": ["Spawn, timeout, nonzero status, and output-limit failures preserve safe context."],
         "ordering": ["Argument construction is separate from process execution."],
-        "invariants": ["External state is not mutated by validation.", "Sensitive values are excluded from diagnostics."]
+        "invariants": ["External state is not mutated by validation.", "Sensitive values are excluded from diagnostics."],
+        "boundaries": { "owns": ["Validation safety and diagnostics"], "doesNotOwn": ["Secrets management"] }
       },
       "implementation": {"source": ["src/cli/run-cli.mjs", "src/orchestrators/run-convention-stage.mjs"]},
       "verification": {"tests": ["tests/cli/run-cli.test.mjs", "tests/orchestrators/run-convention-stage.test.mjs"], "commands": ["npm test"]}
@@ -266,7 +276,8 @@
         "outputs": {"pipeline": "Stable stage or check results without hidden side effects."},
         "errors": ["Dependency failures retain their original safe context."],
         "ordering": ["Composition determines stage order; subordinate modules do not secretly reorder peer work."],
-        "invariants": ["A new responsibility is represented by a focused module rather than appended to an unrelated module."]
+        "invariants": ["A new responsibility is represented by a focused module rather than appended to an unrelated module."],
+        "boundaries": { "owns": ["Harness module decomposition guidance"], "doesNotOwn": ["Project architecture outside Test8"] }
       },
       "implementation": {"source": ["src/orchestrators", "src/cli"]},
       "verification": {"tests": ["tests/orchestrators", "tests/cli"], "commands": ["npm test", "npm run lint"]}
@@ -283,7 +294,8 @@
         "outputs": {"traceability": "A reviewer can identify the responsible implementation and verification evidence for each contract."},
         "errors": ["Missing or invalid contract references are documentation/contract review failures."],
         "ordering": ["Contract definition precedes implementation and verification evidence."],
-        "invariants": ["The contract document remains authoritative for harness behavior even when implementation or tests are incomplete."]
+        "invariants": ["The contract document remains authoritative for harness behavior even when implementation or tests are incomplete."],
+        "boundaries": { "owns": ["Test8 contract references"], "doesNotOwn": ["Convention and operations contracts"] }
       },
       "implementation": {"source": ["specs/directives.json", "specs/contracts.json", "src", "bin"]},
       "verification": {"tests": ["tests", "tests/architecture/source-test-mirror.test.mjs"], "commands": ["npm test", "npm run lint", "git diff --check"]}

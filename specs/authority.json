@@ -31,6 +31,18 @@
       "evidence": [],
       "notAuthoritativeFor": ["repository policy"],
       "status": "active"
+    },
+    {
+      "id": "test8.contracts",
+      "kind": "contract-reference",
+      "authority": { "path": "./contracts.json" },
+      "directives": [{ "path": "./directives.json", "ids": ["E-18"] }],
+      "implementation": [{ "path": "./contracts.json", "role": "normative-harness-contracts" }],
+      "consumers": ["eliware/qa", "eliware/conventions"],
+      "reviewers": ["eliware/qa"],
+      "evidence": [{ "path": "../tests/architecture/contracts.test.mjs", "kind": "contract-validation" }],
+      "notAuthoritativeFor": ["repository policy", "release or deployment procedure"],
+      "status": "active"
     }
   ]
 }

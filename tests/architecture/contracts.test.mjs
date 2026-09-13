@@ -23,7 +23,7 @@ test("contracts document has the shared atomic contract envelope", async () => {
       kind: "contract-reference",
       authority: expect.any(Object),
       terminology: expect.any(Object),
-      contractConventions: expect.any(Object),
+      format: expect.any(Object),
       contracts: expect.any(Array),
     }),
   );
@@ -49,6 +49,10 @@ test("each contract is atomic, traceable, and structurally uniform", async () =>
           errors: expect.any(Array),
           ordering: expect.any(Array),
           invariants: expect.any(Array),
+          boundaries: expect.objectContaining({
+            owns: expect.any(Array),
+            doesNotOwn: expect.any(Array),
+          }),
         }),
         implementation: expect.objectContaining({ source: expect.any(Array) }),
         verification: expect.objectContaining({
