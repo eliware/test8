@@ -49,7 +49,7 @@ async function fixture(conventions) {
   await mkdir(join(root, ".github", "workflows"), { recursive: true });
   await writeFile(
     join(root, ".github", "workflows", "validation.yml"),
-    "on:\n  push:\n  pull_request:\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - run: npm ci\n      - run: npm test\n",
+    "on:\n  push:\n  pull_request:\n\nconcurrency:\n  group: ${{ github.repository }}-${{ github.ref }}\n  cancel-in-progress: true\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - run: npm ci\n      - run: npm test\n",
   );
   await mkdir(join(root, ".knit"), { recursive: true });
   await writeFile(join(root, ".knit", "validate.mjs"), "export default {};\n");
