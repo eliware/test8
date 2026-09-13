@@ -1,5 +1,13 @@
 import { expect, test } from "@jest/globals";
+import { mkdtemp, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { run } from "../../../../src/checks/private/E-1.150/E-1.150.0.mjs";
 
-test("placeholder check test", () => {
-  expect(true).toBe(true);
+test("requires private distribution guidance", async () => {
+  const root = await mkdtemp(join(tmpdir(), "eliware-test8-private-"));
+  await writeFile(join(root, "AGENTS.md"), "private distribution restrictions");
+  expect((await run({ root })).status).toBe("pass");
+  await writeFile(join(root, "AGENTS.md"), "private");
+  expect((await run({ root })).status).toBe("fail");
 });
