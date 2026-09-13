@@ -51,22 +51,6 @@
       ],
       "directives": [
         {
-          "id": "E-18.1",
-          "dos": ["Treat forks of non-Eliware repositories as exempt from Eliware validation."],
-          "donts": ["Do not impose Eliware checks on an out-of-scope upstream fork."],
-          "directives": [
-            {
-              "id": "A-18.1.0",
-              "dos": [
-                "Determine fork exemption from the repository's declared scope before selecting checks."
-              ],
-              "donts": [
-                "Do not use a fork exemption to skip checks for an in-scope Eliware repository."
-              ]
-            }
-          ]
-        },
-        {
           "id": "E-18.2",
           "dos": ["Fail fast when required repository configuration is missing or malformed."],
           "donts": ["Do not begin partial validation with invalid repository configuration."],
@@ -74,12 +58,10 @@
             {
               "id": "A-18.2.0",
               "dos": [
-                "Read declared check selection and exemption configuration before validation begins.",
-                "Require each exemption to identify one exact rule, its reason, Eli's approval, approval timestamp, and either a concrete expiry date for a temporary exemption or expiry:null for a permanent exemption.",
-                "Enforce the exemption record and its applicability as a consumer of the Conventions policy; do not re-review, renew, or second-guess Eli's recorded temporary or permanent decision."
+                "Read the repository's declared harness configuration before validation begins."
               ],
               "donts": [
-                "Do not treat malformed, unauthorized, expired, or ambiguous exemptions as valid, and do not require periodic review, renewal, or re-justification for a permanent expiry:null exemption."
+                "Do not begin check execution before configuration parsing has completed."
               ]
             },
             {
@@ -232,40 +214,32 @@
             {
               "id": "A-18.7.2",
               "dos": [
-                "Expose stable public CLI flags for help, version, the universal bundled validation stages, and the npm package dry-run stage: --help, --version, --lint, --audit, --format, --format-check, and --pack.",
-                "Run only the stage selected by an explicit stage flag, while an invocation without a stage flag runs the applicable aggregate validation pipeline.",
-                "Return the selected stage's stable pass/fail result and diagnostics through the same public CLI contract."
+                "Expose only the current public harness commands and diagnostic options: --help, --version, --debug-timing, --ignore-100x4, --ignore-monolith-limits, and --no-runInBand.",
+                "Run the bundled convention-check execution path for a normal invocation and return its stable result and diagnostics through the public CLI contract."
               ],
               "donts": [
-                "Do not silently ignore an unknown or unsupported stage flag, broaden a focused stage request into unrelated stages, or expose direct tool commands as the consumer interface."
+                "Do not expose direct Jest, Oxlint, npm audit, npm pack, formatter, or other implementation commands as the consumer interface."
               ]
             },
             {
               "id": "A-18.7.3",
               "dos": [
                 "Treat --help and --version as informational commands that perform no validation and return exit code 0.",
-                "Map --lint to the universal lint stage and return 0 on success or 12 on a lint failure.",
-                "Map --audit to the universal audit stage and return 0 on success or 17 on a package-check failure.",
-                "Map --format to the universal formatter stage; it may rewrite local repository files and returns 0 on success or 18 on a convention/formatting failure.",
-                "Map --format-check to the universal read-only formatter-check stage and return 0 when formatting is compliant or 18 when formatting differs or the check fails.",
-                "Map --pack to the npm-published package dry-run stage and return 0 on success or 17 on a package-check failure.",
-                "Require explicit convention profile selection for applicability; the universal stages are available under general, while --pack is applicable only when npm-published is selected."
+                "Require explicit convention profile selection in package.json.eliware.apply for normal validation.",
+                "Allow diagnostic options to affect only their documented diagnostic or enforcement behavior; they must not select a different profile or invoke an unrelated command."
               ],
               "donts": [
-                "Do not infer profile applicability from repository shape, files, scripts, dependencies, or runtime behavior.",
-                "Do not make an inapplicable explicit stage flag silently succeed, run a different stage, or broaden into the aggregate pipeline; report the stable convention failure instead."
+                "Do not infer profile applicability from repository shape, files, scripts, dependencies, or runtime behavior."
               ]
             },
             {
               "id": "A-18.7.4",
               "dos": [
-                "Run only the selected stage when one explicit stage flag is present.",
-                "When no stage flag is present, run the applicable aggregate pipeline, including the universal audit stage and the npm-published pack stage when that profile is selected.",
-                "Keep the aggregate pipeline from invoking the formatter-writing stage implicitly; format remains an explicit command and format-check remains read-only."
+                "Keep normal validation limited to bundled convention checks and their orchestration.",
+                "Keep publication, deployment, release, synchronization, and external package commands outside the harness runtime."
               ],
               "donts": [
-                "Do not run lint, audit, format, format-check, or pack as unrelated side effects of another explicit stage request.",
-                "Do not invoke the consumer test script recursively from the package-check stage."
+                "Do not run unrelated lifecycle stages or invoke the consumer test script recursively."
               ]
             },
             {
@@ -276,7 +250,7 @@
                 "Reject unsupported, missing, or ambiguous focused paths with the stable convention failure result before executing unrelated validation."
               ],
               "donts": [
-                "Do not apply focused-path narrowing to a package-wide --pack operation or silently reinterpret a package path as a test focus.",
+                "Do not apply focused-path narrowing to an aggregate package operation or silently reinterpret a package path as a test focus.",
                 "Do not fall back to aggregate validation when a focused path cannot be resolved."
               ]
             },
@@ -290,6 +264,84 @@
               "donts": [
                 "Do not convert an unknown, skipped, partial, or inapplicable selected stage into success.",
                 "Do not allow a later result to erase an earlier failure diagnostic or change public exit semantics as an incidental implementation detail."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "E-18.8",
+          "dos": [
+            "Implement the harness as a self-contained filesystem-discovered convention-check system.",
+            "Treat the published bundled checks as the complete runtime authority snapshot."
+          ],
+          "donts": [
+            "Do not require the private eliware/conventions repository or any other external authority repository at runtime.",
+            "Do not retain a legacy compatibility layer or a second legacy check registry."
+          ],
+          "directives": [
+            {
+              "id": "A-18.8.0",
+              "dos": [
+                "Store checks under src/checks/<profile>/ using filenames that are the exact published directive IDs.",
+                "Use subdirectories to represent the directive parent/child hierarchy, with the same hierarchy available to exemption traversal."
+              ],
+              "donts": [
+                "Do not use a separate mapping.json as the authoritative check registry when profile directories and directive-named modules provide that mapping."
+              ]
+            },
+            {
+              "id": "A-18.8.1",
+              "dos": [
+                "Give each bundled directive module a stable ruleId and a single check entry point that returns a pass or fail result for that exact rule.",
+                "Require the module filename, exported identity, and reported result identity to agree."
+              ],
+              "donts": [
+                "Do not combine unrelated directive identities into one unidentifiable module or silently treat a malformed module as a passing check."
+              ]
+            },
+            {
+              "id": "A-18.8.2",
+              "dos": [
+                "Provision the bundled check tree from the published convention directive set so that each known directive has a discoverable implementation location.",
+                "Keep directives that are not deterministically enforceable from being represented as successful enforcement merely because a scaffold exists; their implementation status must remain distinct from the harness result contract."
+              ],
+              "donts": [
+                "Do not claim that a placeholder module enforces a convention before its deterministic check logic exists."
+              ]
+            },
+            {
+              "id": "A-18.8.3",
+              "dos": [
+                "Skip an exempted rule and every discovered child rule beneath that rule before executing check logic.",
+                "Validate exemption IDs against the complete bundled check tree, not only the currently selected profiles."
+              ],
+              "donts": [
+                "Do not execute a check that is excluded by its applicable exemption or a parent exemption."
+              ]
+            },
+            {
+              "id": "A-18.8.4",
+              "dos": ["Keep applicability selection and exemption evaluation separate from check implementation."],
+              "donts": [
+                "Do not make individual check modules infer their own profile applicability or exemption state."
+              ]
+            },
+            {
+              "id": "A-18.8.5",
+              "dos": [
+                "Treat missing or malformed harness configuration as a fast configuration failure for an in-scope validation target."
+              ],
+              "donts": [
+                "Do not begin partial validation with missing or invalid configuration."
+              ]
+            },
+            {
+              "id": "A-18.8.7",
+              "dos": [
+                "Keep focused test execution available through the public harness boundary without reporting unrelated-module coverage failures."
+              ],
+              "donts": [
+                "Do not broaden a focused run into unrelated validation."
               ]
             }
           ]

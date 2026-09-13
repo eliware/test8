@@ -1,7 +1,8 @@
-import { runCli } from "../../src/cli/run-cli.mjs";
 import { mkdtemp, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { expect, test } from "@jest/globals";
+import { runCli } from "../../src/cli/run-cli.mjs";
 
 test("reports the package version", async () => {
   const output = [];
@@ -9,100 +10,26 @@ test("reports the package version", async () => {
   expect(output).toEqual(["8.0.0"]);
 });
 
-test("reports help", async () => {
+test("reports the convention-only help contract", async () => {
   const output = [];
   await expect(runCli(["--help"], (value) => output.push(value))).resolves.toBe(0);
   expect(output[0]).toContain("Usage: eliware-test");
   expect(output[0]).toContain("--debug-timing");
-  expect(output[0]).toContain("--audit");
-  expect(output[0]).toContain("--pack");
+  expect(output[0]).not.toContain("--audit");
+  expect(output[0]).not.toContain("--pack");
 });
 
-test("runs only the requested audit or pack stage", async () => {
-  const calls = [];
-  const audit = async (root, write) => {
-    calls.push(["audit", root]);
-    write("audit output");
-    return 4;
-  };
-  const pack = async (root, write) => {
-    calls.push(["pack", root]);
-    write("pack output");
-    return 5;
-  };
+test("runs convention validation and reports debug timing when requested", async () => {
+  const root = await mkdtemp(join(tmpdir(), "eliware-test8-cli-"));
+  await writeFile(join(root, "AGENTS.md"), "eliware/docs eliware/conventions eliware/operations\n");
+  await writeFile(join(root, "package.json"), JSON.stringify({ eliware: { apply: ["general"] } }));
   const output = [];
-  await expect(
-    runCli(
-      ["--audit"],
-      (value) => output.push(value),
-      "C:/repo",
-      undefined,
-      undefined,
-      audit,
-      pack,
-    ),
-  ).resolves.toBe(4);
-  await expect(
-    runCli(["--pack"], (value) => output.push(value), "C:/repo", undefined, undefined, audit, pack),
-  ).resolves.toBe(5);
-  expect(calls).toEqual([
-    ["audit", "C:/repo"],
-    ["pack", "C:/repo"],
-  ]);
-  expect(output).toEqual(["audit output", "pack output"]);
-});
-
-test("supports lint and formatting command modes", async () => {
-  await expect(runCli(["--lint"], () => {}, process.cwd())).resolves.toBe(0);
-  await expect(runCli(["--format"], () => {}, process.cwd())).resolves.toBe(0);
-  await expect(runCli(["--format-check"], () => {}, process.cwd())).resolves.toBe(0);
-});
-
-test("uses console logging when no writer is supplied", async () => {
-  await expect(runCli(["--version"])).resolves.toBe(0);
-});
-
-test("reports timing only when debug timing is requested", async () => {
-  const output = [];
-  const application = async () => ({ code: 0, results: [] });
-  await expect(
-    runCli(["--debug-timing"], (value) => output.push(value), process.cwd(), application),
-  ).resolves.toBe(0);
+  await expect(runCli(["--debug-timing"], (value) => output.push(value), root)).resolves.toBe(0);
   expect(output).toHaveLength(1);
   expect(output[0]).toMatch(/^Validation time: \d+ms$/);
 });
 
-test("prints diagnostics for failed validation stages", async () => {
-  const output = [];
-  const application = async () => ({
-    code: 8,
-    results: [{ category: "tests", code: 8, output: "Jest failed" }],
-  });
-  await expect(runCli([], (value) => output.push(value), process.cwd(), application)).resolves.toBe(
-    8,
-  );
-  expect(output).toContain("Jest failed");
-});
-
-test("passes the coverage callback through with the requested opt-out", async () => {
-  let received;
-  const application = async ({ runCoverage }) => {
-    received = await runCoverage();
-    return { code: 0, results: [] };
-  };
-  await expect(
-    runCli(
-      ["--ignore-100x4"],
-      () => {},
-      process.cwd(),
-      application,
-      async (root, ignore100x4) => ({ root, ignore100x4 }),
-    ),
-  ).resolves.toBe(0);
-  expect(received).toEqual({ root: process.cwd(), ignore100x4: true });
-});
-
-test("returns the internal error code when package metadata cannot be read", async () => {
+test("fails when package metadata cannot be read", async () => {
   const output = [];
   await expect(
     runCli([], (value) => output.push(value), "C:/path-that-does-not-exist"),
@@ -117,45 +44,4 @@ test("fails fast when package.json.eliware is absent", async () => {
   const output = [];
   await expect(runCli([], (value) => output.push(value), root)).resolves.toBe(18);
   expect(output).toEqual(["package.json.eliware is required for Eliware validation."]);
-});
-
-test("forwards diagnostic options and reports every stage", async () => {
-  const output = [];
-  let received;
-  const application = async (options) => {
-    received = options;
-    return {
-      code: 3,
-      results: [
-        { category: "lint", code: 3, output: "lint failed" },
-        { category: "tests", code: 0, output: "" },
-      ],
-    };
-  };
-  await expect(
-    runCli(
-      ["--no-runInBand", "--ignore-monolith-limits"],
-      (value) => output.push(value),
-      process.cwd(),
-      application,
-    ),
-  ).resolves.toBe(3);
-  expect(received.args).toEqual(["--no-runInBand", "--ignore-monolith-limits"]);
-  expect(received.diagnosticOptions).toEqual({ ignoredRuleIds: ["A-18.5.2"] });
-  expect(output).toContain("lint failed");
-});
-
-test("returns the internal error code for application failures", async () => {
-  const output = [];
-  await expect(
-    runCli(
-      [],
-      (value) => output.push(value),
-      process.cwd(),
-      async () => {
-        throw new Error("application failed");
-      },
-    ),
-  ).resolves.toBe(18);
-  expect(output).toEqual(["application failed"]);
 });

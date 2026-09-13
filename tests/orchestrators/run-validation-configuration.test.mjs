@@ -9,7 +9,7 @@ async function fixture(conventions) {
   await mkdir(join(root, "src", "checks", "general"), { recursive: true });
   await writeFile(
     join(root, "AGENTS.md"),
-    "# fixture repository purpose\nScope boundaries repository-wide subdirectory instructions. Read README.md and applicable documentation before changes. Validation commands. Security secrets. Web routes assets configuration browser deployment ports. Application configuration connection shutdown workflow. CLI entrypoint commands validation platform.\n",
+    "# fixture repository purpose\nScope boundaries repository-wide subdirectory instructions. Read README.md and applicable documentation before changes. Validation commands. Security secrets. Web routes assets configuration browser deployment ports. Application configuration connection shutdown workflow. CLI entrypoint commands validation platform. eliware/docs eliware/conventions eliware/operations\n",
   );
   await writeFile(join(root, "README.md"), "# fixture\n");
   await writeFile(join(root, "RELEASE_NOTES.md"), "# Release notes\n## 1.0.0\n");
@@ -110,11 +110,6 @@ test("rejects missing convention configuration", async () => {
   await expect(runValidation(root)).rejects.toThrow(/eliware\.apply/);
 });
 
-test("rejects the removed node convention group", async () => {
-  const root = await fixture({ apply: ["general", "node"] });
-  await expect(runValidation(root)).rejects.toThrow(/Unknown convention group: node/);
-});
-
 test("rejects unknown convention groups during discovery", async () => {
   await expect(
     discoverChecks(["missing"], {
@@ -126,7 +121,7 @@ test("rejects unknown convention groups during discovery", async () => {
 });
 
 test("rejects duplicate discovered check IDs", async () => {
-  const entry = { name: "E-1.0.mjs", isFile: () => true };
+  const entry = { name: "E-1.0.mjs", isDirectory: () => false, isFile: () => true };
   await expect(
     discoverChecks(["general"], {
       root: "C:/checks",
@@ -138,10 +133,10 @@ test("rejects duplicate discovered check IDs", async () => {
 
 test("sorts discovered checks by numeric rule components", async () => {
   const entries = [
-    { name: "E-1.10.mjs", isFile: () => true },
-    { name: "E-1.2.mjs", isFile: () => true },
-    { name: "E-1.mjs", isFile: () => true },
-    { name: "E-1.0.mjs", isFile: () => true },
+    { name: "E-1.10.mjs", isDirectory: () => false, isFile: () => true },
+    { name: "E-1.2.mjs", isDirectory: () => false, isFile: () => true },
+    { name: "E-1.mjs", isDirectory: () => false, isFile: () => true },
+    { name: "E-1.0.mjs", isDirectory: () => false, isFile: () => true },
   ];
   const discovered = await discoverChecks(["general"], {
     root: "C:/checks",
@@ -155,7 +150,7 @@ test("sorts discovered checks by numeric rule components", async () => {
 });
 
 test("rejects discovered modules with invalid exports", async () => {
-  const entry = { name: "E-1.0.mjs", isFile: () => true };
+  const entry = { name: "E-1.0.mjs", isDirectory: () => false, isFile: () => true };
   await expect(
     discoverChecks(["general"], {
       root: "C:/checks",

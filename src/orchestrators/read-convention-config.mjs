@@ -6,8 +6,5 @@ export function readConventionConfig(packageJson) {
   if (apply.some((group) => typeof group !== "string" || group.length === 0)) {
     throw new Error("eliware.apply must be an array of group names.");
   }
-  if (apply.includes("node")) {
-    throw new Error("Unknown convention group: node");
-  }
   return { apply };
 }

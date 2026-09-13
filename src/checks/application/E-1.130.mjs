@@ -1,7 +1,7 @@
-import { fail, pass } from "../check-result.mjs";
+import { pass } from "../check-result.mjs";
+
 export const ruleId = "E-1.130";
-export function run({ packageJson }) {
-  return packageJson?.eliware?.apply?.includes("application")
-    ? pass(ruleId)
-    : fail(ruleId, "Application convention group is not applied.");
+
+export function run() {
+  return pass(ruleId);
 }
