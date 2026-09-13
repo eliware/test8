@@ -4,7 +4,7 @@ import { discoverChecks } from "../../src/orchestrators/discover-checks.mjs";
 test("discovers the bundled general convention checks", async () => {
   const checks = await discoverChecks(["general"]);
   expect(checks.length).toBeGreaterThan(0);
-  expect(checks.every(({ ruleId, run }) => /^([EA])-\d+(?:\.\d+)*$/.test(ruleId))).toBe(true);
+  expect(checks.every(({ ruleId }) => /^([EA])-\d+(?:\.\d+)*$/.test(ruleId))).toBe(true);
   expect(checks.every(({ run }) => typeof run === "function")).toBe(true);
 });
 

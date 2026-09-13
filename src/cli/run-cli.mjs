@@ -26,7 +26,10 @@ export async function runCli(
     const diagnosticOptions = readDiagnosticOptions(args);
     const result = await runConventionStage(() =>
       runValidation(root, diagnosticOptions.ignoredRuleIds, {
-        executeJest: options.executeJest !== false,
+        executeJest: options.executeJest !== false && diagnosticOptions.mode === null,
+        executeLint: options.executeLint ?? options.executeJest ?? true,
+        executeAudit: options.executeAudit ?? options.executeJest ?? true,
+        mode: diagnosticOptions.mode,
         jestArgs: diagnosticOptions.jestArgs,
       }),
     );

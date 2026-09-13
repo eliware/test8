@@ -17,6 +17,9 @@ export async function runValidation(root, ignoredRuleIds = [], options = {}) {
     root,
     packageJson,
     executeJest: options.executeJest === true,
+    executeLint: options.executeLint === true,
+    executeAudit: options.executeAudit === true,
+    mode: options.mode ?? null,
     jestArgs: options.jestArgs ?? [],
   };
   return executeConventionChecks(checks, context, new Set([...exemptions, ...ignoredRuleIds]));

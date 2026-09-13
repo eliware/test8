@@ -1,9 +1,13 @@
 export function readDiagnosticOptions(args) {
+  const modeFlags = ["--lint", "--format", "--format-check", "--audit", "--pack"];
+  const modes = args.filter((argument) => modeFlags.includes(argument));
+  if (modes.length > 1) throw new Error("Validation mode flags are mutually exclusive.");
   return {
     ignoredRuleIds: [
       ...(args.includes("--ignore-100x4") ? ["E-1.20.10"] : []),
       ...(args.includes("--ignore-monolith-limits") ? ["E-1.20.16"] : []),
     ],
+    mode: modes[0]?.slice(2) ?? null,
     jestArgs: args,
   };
 }
