@@ -8,6 +8,11 @@
 repositories. This repository is the native v8 implementation; it does not
 provide a v7 compatibility layer.
 
+Description: Shared deterministic repository validation for Eliware projects.
+Keywords: eliware, testing, validation, jest, oxlint, prettier, cli.
+Author: Eliware <eliware@eliware.org>.
+Repository: https://github.com/eliware/test.
+
 ## Requirements
 
 Node.js 26 is required.

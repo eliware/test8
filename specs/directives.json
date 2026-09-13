@@ -121,11 +121,11 @@
             {
               "id": "A-18.5.0",
               "dos": [
-                "Run the harness's own applicable architecture checks as part of harness validation.",
-                "Preserve each architecture check's pass/fail result and diagnostics."
+                "The harness must execute every selected deterministic bundled check as part of harness validation.",
+                "Preserve each bundled check's pass/fail result and diagnostics."
               ],
               "donts": [
-                "Do not replace architecture-check failures with warnings or successful output."
+                "Do not silently omit a selected deterministic check, or replace a check failure with a warning or successful output."
               ]
             },
             {
