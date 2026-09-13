@@ -8,8 +8,8 @@
       "./directives.json",
       "./contracts.json"
     ],
-    "implementationRole": "Implementation files realize these contracts but cannot redefine them.",
-    "testRole": "Tests are verification evidence and regression protection only; a test cannot create, weaken, or replace a contract.",
+    "implementationRole": "Repository files realize these contracts but do not redefine them.",
+    "verificationRole": "Tests and commands verify these contracts but are not authoritative.",
     "externalBoundaries": [
       "../../docs/authority-map.json",
       "../../conventions/specs/general.json",
@@ -31,7 +31,16 @@
     "diagnostic": "A stable human-readable description of a validation failure or internal validation error."
   },
   "format": {
-    "requiredFields": [
+    "requiredTopLevelFields": [
+      "schemaVersion",
+      "contractVersion",
+      "kind",
+      "description",
+      "authority",
+      "format",
+      "contracts"
+    ],
+    "requiredContractFields": [
       "id",
       "title",
       "scope",
@@ -42,7 +51,26 @@
       "implementation",
       "verification"
     ],
-    "directiveIds": "References are to local Test8 directives only; repository convention IDs remain authoritative in eliware/conventions.",
+    "optionalContractFields": ["parent", "dependencies", "status"],
+    "contractIdPattern": "^C-\\d+(?:\\.\\d+)*$",
+    "directiveIdPattern": "^[EA]-\\d+(?:\\.\\d+)*$",
+    "contractSections": [
+      "purpose",
+      "inputs",
+      "outputs",
+      "errors",
+      "ordering",
+      "invariants",
+      "boundaries"
+    ],
+    "rules": [
+      "Contract IDs are unique within one repository.",
+      "directiveIds reference authoritative local directives or explicitly linked external directives.",
+      "Parent and dependency references must resolve and must not form cycles.",
+      "Implementation and verification references are evidence only.",
+      "A repository adopts this format by adding specs/contracts.json and linking it from specs/README.md."
+    ],
+    "directiveIds": "References are to authoritative local directives or explicitly linked external directives; repository convention IDs remain authoritative in eliware/conventions.",
     "contract": "The exact inputs, outputs, errors, ordering, and invariants for one cohesive harness behavior.",
     "implementation": "Non-authoritative repository-relative source ownership references.",
     "verification": "Non-authoritative tests and commands used to verify the contract.",
