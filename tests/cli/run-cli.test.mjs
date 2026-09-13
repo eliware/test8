@@ -47,7 +47,7 @@ test("runs convention validation and reports debug timing when requested", async
       }],
     }),
   );
-  await writeFile(join(root, "package.json"), JSON.stringify({ eliware: { apply: ["general"] } }));
+  await writeFile(join(root, "package.json"), JSON.stringify({ eliware: { apply: ["fork"] } }));
   const output = [];
   await expect(
     runCli(["--debug-timing"], (value) => output.push(value), root, { executeJest: false }),

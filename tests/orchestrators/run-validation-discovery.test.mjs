@@ -148,14 +148,14 @@ test("runs the current general convention scaffold for unsafe environment values
   const results = await runValidation(root);
   expect(results.find(({ ruleId }) => ruleId === "E-1.20.8").status).toBe("pass");
 });
-test("runs the current general convention scaffold for environment references", async () => {
+test("fails when a source environment reference is undocumented", async () => {
   const root = await fixture({ apply: ["general"] });
   await writeFile(
     join(root, "src", "uses-env.mjs"),
     `export const value = ${["process", "env", "MISSING_VALUE"].join(".")};\n`,
   );
   const results = await runValidation(root);
-  expect(results.find(({ ruleId }) => ruleId === "E-1.20.8").status).toBe("pass");
+  expect(results.find(({ ruleId }) => ruleId === "E-1.20.8").status).toBe("fail");
 });
 test("runs the current general convention scaffold for Markdown links", async () => {
   const root = await fixture({ apply: ["general"] });

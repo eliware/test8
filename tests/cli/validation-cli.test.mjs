@@ -12,7 +12,7 @@ async function fixture(withConfiguration = true) {
       name: "fixture",
       version: "1.0.0",
       type: "module",
-      ...(withConfiguration ? { eliware: { apply: ["general"] } } : {}),
+      ...(withConfiguration ? { eliware: { apply: ["fork"] } } : {}),
     }),
   );
   await writeFile(join(root, "README.md"), "# fixture\n");

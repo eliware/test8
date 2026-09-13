@@ -106,6 +106,14 @@
         "review": "Review when @eliware/test can consume its published eliware-test command without self-hosting."
       },
       {
+        "ruleId": "E-1.20.19",
+        "reason": "@eliware/test must self-host its audit stage while it is being built and cannot invoke its own published eliware-test command.",
+        "approver": "Eli",
+        "approvalTimestamp": "2026-09-13T00:00:00Z",
+        "expiry": null,
+        "review": "Review when @eliware/test can consume its published eliware-test command without self-hosting."
+      },
+      {
         "ruleId": "E-1.140.1",
         "reason": "@eliware/test must self-host its pack validation while it is being built and cannot invoke its own published eliware-test command.",
         "approver": "Eli",

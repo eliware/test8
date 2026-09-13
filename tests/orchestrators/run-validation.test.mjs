@@ -7,17 +7,18 @@ import { validateExemptionRecords } from "../../src/orchestrators/validate-exemp
 async function fixture(conventions) {
   const root = await mkdtemp(join(tmpdir(), "eliware-test8-"));
   await mkdir(join(root, "src", "checks", "general"), { recursive: true });
+  await mkdir(join(root, "tests"), { recursive: true });
   await writeFile(
     join(root, "AGENTS.md"),
     "# fixture repository purpose\nScope boundaries repository-wide subdirectory instructions. Read README.md and applicable documentation before changes. Validation commands. Security secrets. Web routes assets configuration browser deployment ports. Application configuration connection shutdown workflow. CLI entrypoint commands validation platform. eliware/docs eliware/conventions eliware/operations\n",
   );
-  await writeFile(join(root, "README.md"), "# fixture\n");
-  await writeFile(join(root, "RELEASE_NOTES.md"), "# Release notes\n## 1.0.0\n");
+  await writeFile(join(root, "README.md"), "# [![eliware.org](https://eliware.org/logos/brand.png)](https://github.com/eliware/fixture)\n\n# fixture\n\n## Purpose\nfixture\n## Requirements\nfixture\n## Setup\nfixture\n## Configuration\nfixture\n## Usage\nfixture\n## Validation\nfixture\n## Operations\nfixture\n## Security\nfixture\n## Support\nfixture\n## License\n[license](LICENSE) https://www.npmjs.com/package/@eliware/fixture\n[Release notes](RELEASE_NOTES.md)\n");
+  await writeFile(join(root, "RELEASE_NOTES.md"), "# Release notes\n## 8.0.0\n");
   await writeFile(join(root, "LICENSE"), "MIT License\nCopyright (c) 2026 Eliware\n");
   await writeFile(join(root, ".env.example"), "# safe example\n");
   await writeFile(
     join(root, ".gitignore"),
-    "node_modules\n.git\ncoverage\nbuild\n.env\nbackup\ndump\nrestore\nruntime state\n",
+    "node_modules\n.git\ncoverage\nbuild\n.env\nbackup\ndump\nrestore\nruntime state\n.DS_Store\n",
   );
   await mkdir(join(root, "docs"), { recursive: true });
   await writeFile(join(root, "docs", "README.md"), "# docs\n");
@@ -25,6 +26,7 @@ async function fixture(conventions) {
   await writeFile(join(root, "examples", "README.md"), "# examples\n");
   await mkdir(join(root, "specs"), { recursive: true });
   await writeFile(join(root, "specs", "README.md"), "# specs\n- [contracts.json](contracts.json)\n");
+  await writeFile(join(root, "specs", "directives.json"), JSON.stringify({ directives: [{ id: "E-1", directives: [] }] }));
   await writeFile(
     join(root, "specs", "contracts.json"),
     JSON.stringify({
@@ -53,7 +55,7 @@ async function fixture(conventions) {
     "on:\n  push:\n  pull_request:\n\nconcurrency:\n  group: ${{ github.repository }}-${{ github.ref }}\n  cancel-in-progress: true\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - run: npm ci\n      - run: npm test\n",
   );
   await mkdir(join(root, ".knit"), { recursive: true });
-  await writeFile(join(root, ".knit", "validate.mjs"), "export default {};\n");
+  await writeFile(join(root, ".knit", "validate.mjs"), "git pull --ff-only origin main\nnpm ci\nnpm test\n");
   await writeFile(join(root, ".knit", "deploy.yaml"), "version: 1\n");
   await writeFile(
     join(root, "package.json"),
@@ -81,7 +83,9 @@ async function fixture(conventions) {
       type: "module",
       engines: { node: ">=26" },
       dependencies: { jest: "^30.0.0", oxlint: "^1.0.0", prettier: "^3.0.0" },
-      scripts: { test: "eliware-test", lint: "eliware-test --lint" },
+      scripts: { test: "eliware-test", lint: "eliware-test --lint", audit: "eliware-test --audit", format: "eliware-test --format", "format:check": "eliware-test --format-check" },
+      prettier: { printWidth: 100, tabWidth: 2, semi: true, singleQuote: false, trailingComma: "all" },
+      jest: { collectCoverageFrom: ["src/**/*.mjs"] },
       eliware: {
         apply: conventions.apply,
         exempt: conventions.exempt ?? [],
@@ -102,8 +106,8 @@ async function fixture(conventions) {
   await writeFile(
     join(root, "package-lock.json"),
     JSON.stringify({
-      name: "fixture",
-      version: "1.0.0",
+      name: "@eliware/fixture",
+      version: "8.0.0",
       lockfileVersion: 3,
       packages: {},
     }),
@@ -208,7 +212,7 @@ test("fails when required package identity metadata is missing", async () => {
     await import("node:fs/promises")
   ).writeFile(join(root, "package.json"), JSON.stringify(packageJson));
   const results = await runValidation(root);
-  expect(results.find(({ ruleId }) => ruleId === "E-1.19").status).toBe("pass");
+  expect(results.find(({ ruleId }) => ruleId === "E-1.19").status).toBe("fail");
 });
 test("retains the general check when release notes are missing", async () => {
   const root = await fixture({ apply: ["general"] });

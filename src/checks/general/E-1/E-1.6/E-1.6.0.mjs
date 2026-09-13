@@ -1,4 +1,6 @@
 import { readdir } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
 import { join, relative } from "node:path";
 import { fail, pass } from "../../../check-result.mjs";
 
@@ -7,6 +9,7 @@ export const parentRuleId = "E-1.6";
 
 const ignoredDirectories = new Set([".git", "node_modules", "coverage", "build", "dist", "target"]);
 const forbidden = /(^|\b)(?:credentials?|secrets?|backup|dump|restore|runtime-state|session)(?:\b|[._-])|\.(?:env|pem|key|p12|pfx)$/i;
+const execFileAsync = promisify(execFile);
 
 async function collect(directory, root, findings) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
@@ -19,10 +22,24 @@ async function collect(directory, root, findings) {
   }
 }
 
+async function trackedPaths(root) {
+  try {
+    const { stdout } = await execFileAsync("git", ["-C", root, "ls-files", "-z"], { windowsHide: true });
+    return stdout.split("\0").filter(Boolean);
+  } catch {
+    return null;
+  }
+}
+
 export async function run({ root }) {
   const findings = [];
   try {
-    await collect(root, root, findings);
+    const tracked = await trackedPaths(root);
+    if (tracked) {
+      findings.push(...tracked.filter((path) => path.split("/").some((part) => forbidden.test(part)) && !path.endsWith(".env.example")));
+    } else {
+      await collect(root, root, findings);
+    }
   } catch {
     return fail(ruleId, "Repository contents could not be inspected for secret or runtime-state artifacts.");
   }

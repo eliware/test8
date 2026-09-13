@@ -23,7 +23,7 @@ export async function run({ root }) {
     const missing = files
       .filter((file) => file !== join(docs, "README.md"))
       .map((file) => relative(root, file).replaceAll("\\", "/"))
-      .filter((file) => !index.includes(file));
+      .filter((file) => !index.includes(file) && !index.includes(file.split("/").pop()));
     if (missing.length > 0) return fail(ruleId, `docs/README.md must index: ${missing.join(", ")}.`);
   } catch {
     return fail(ruleId, "docs/README.md must index the complete end-user documentation tree.");

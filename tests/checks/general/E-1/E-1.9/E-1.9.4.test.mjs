@@ -1,5 +1,8 @@
 import { expect, test } from "@jest/globals";
+import { run } from "../../../../../src/checks/general/E-1/E-1.9/E-1.9.4.mjs";
 
-test("placeholder check test", () => {
-  expect(true).toBe(true);
+test("requires both authority boundaries", () => {
+  const packageJson = { eliware: { authority: { authoritativeFor: ["validation"], notAuthoritativeFor: ["operations"] } } };
+  expect(run({ packageJson }).status).toBe("pass");
+  expect(run({ packageJson: { eliware: { authority: { authoritativeFor: [] } } } }).status).toBe("fail");
 });
