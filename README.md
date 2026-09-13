@@ -15,7 +15,7 @@ Node.js 26 is required.
 ## Setup
 
 ```text
-npm install
+npm ci
 ```
 
 ## Usage
