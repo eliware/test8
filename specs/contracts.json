@@ -119,7 +119,7 @@
       "directiveIds": ["E-18.6", "A-18.7.4", "A-18.7.6"],
       "dos": [
         "Run the bundled convention-validation path for a normal invocation.",
-        "Return code 18 for convention, configuration, argument, or harness failures.",
+        "Return the stable failure code associated with the failed validation stage, or 18 for convention, configuration, argument, or harness failures.",
         "Preserve every failed-check diagnostic and optionally append one timing diagnostic when requested."
       ],
       "donts": [
@@ -132,7 +132,7 @@
         "outputs": {"stage": "{ code, category: 'conventions', diagnostics }"},
         "errors": ["Thrown orchestration errors become code 18 with their message as a diagnostic."],
         "ordering": ["Read options, run validation, write stage diagnostics, then write optional timing."],
-        "invariants": ["Successful validation returns code 0 and an empty diagnostics list."],
+        "invariants": ["Successful validation returns code 0 and an empty diagnostics list.", "Jest, coverage, lint, package-stage, internal, and convention failures retain their distinct stable exit codes."],
         "boundaries": { "owns": ["Test8 validation execution"], "doesNotOwn": ["Project implementation"] }
       },
       "implementation": {"source": ["src/cli/read-diagnostic-options.mjs", "src/cli/write-stage-diagnostics.mjs", "src/cli/write-debug-timing.mjs", "src/orchestrators/run-convention-stage.mjs"]},
@@ -239,7 +239,7 @@
         "outputs": {"stage": "{ code, category: 'conventions', diagnostics: string[] }"},
         "errors": ["A thrown callback error produces code 18 and one safe diagnostic."],
         "ordering": ["Failure diagnostics follow check result order."],
-        "invariants": ["All-pass results produce code 0 and no diagnostics.", "Any failed check produces code 18."],
+      "invariants": ["All-pass results produce code 0 and no diagnostics.", "Failed checks map to their documented stable stage code; multiple failures use the highest applicable code while retaining every diagnostic."],
         "boundaries": { "owns": ["Validation result aggregation"], "doesNotOwn": ["Project quality decisions"] }
       },
       "implementation": {"source": ["src/orchestrators/run-convention-stage.mjs", "src/cli/write-stage-diagnostics.mjs"]},
