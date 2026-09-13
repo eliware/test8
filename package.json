@@ -82,9 +82,6 @@
     "prettier": "^3.9.6"
   },
   "eliware": {
-    "conventions": {
-      "version": "8.0"
-    },
     "apply": [
       "general",
       "application",

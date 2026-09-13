@@ -21,6 +21,11 @@
       "authoritativeFor": "Universal repository conventions and profile authority."
     },
     {
+      "path": "../../conventions/specs/application.json",
+      "relation": "relatedAuthority",
+      "authoritativeFor": "Application repository requirements enforced by this package."
+    },
+    {
       "path": "../../conventions/specs/cli.json",
       "relation": "relatedAuthority",
       "authoritativeFor": "CLI repository requirements, public help/version behavior, and exit-code documentation."

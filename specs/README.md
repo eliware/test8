@@ -13,6 +13,7 @@ applicability, focused versus aggregate behavior, formatter safety, and stable
 exit-code precedence. Repository requirements and profile policy remain
 authoritative in Eliware Conventions, including
 [general.json](../../conventions/specs/general.json),
+[application.json](../../conventions/specs/application.json),
 [cli.json](../../conventions/specs/cli.json), and
 [npm-published.json](../../conventions/specs/npm-published.json); this
 specification defines only how the harness exposes and enforces them.
