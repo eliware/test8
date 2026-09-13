@@ -24,7 +24,29 @@ test("runs convention validation and reports debug timing when requested", async
   await writeFile(join(root, "README.md"), "# fixture\n");
   await writeFile(join(root, "AGENTS.md"), "eliware/docs eliware/conventions eliware/operations\n");
   await mkdir(join(root, "specs"));
-  await writeFile(join(root, "specs", "README.md"), "# specs\n");
+  await writeFile(join(root, "specs", "README.md"), "# specs\n- [contracts.json](contracts.json)\n");
+  await writeFile(
+    join(root, "specs", "contracts.json"),
+    JSON.stringify({
+      schemaVersion: "1.0",
+      contractVersion: "8.0",
+      kind: "contract-reference",
+      description: "fixture",
+      authority: {},
+      format: {},
+      contracts: [{
+        id: "C-1.1",
+        title: "fixture",
+        scope: "test",
+        directiveIds: ["E-1.25"],
+        dos: [],
+        donts: [],
+        contract: { purpose: "", inputs: [], outputs: [], errors: [], ordering: [], invariants: [], boundaries: {} },
+        implementation: {},
+        verification: {},
+      }],
+    }),
+  );
   await writeFile(join(root, "package.json"), JSON.stringify({ eliware: { apply: ["general"] } }));
   const output = [];
   await expect(

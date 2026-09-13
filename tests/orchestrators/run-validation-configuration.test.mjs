@@ -24,7 +24,29 @@ async function fixture(conventions) {
   await mkdir(join(root, "examples"), { recursive: true });
   await writeFile(join(root, "examples", "README.md"), "# examples\n");
   await mkdir(join(root, "specs"), { recursive: true });
-  await writeFile(join(root, "specs", "README.md"), "# specs\n");
+  await writeFile(join(root, "specs", "README.md"), "# specs\n- [contracts.json](contracts.json)\n");
+  await writeFile(
+    join(root, "specs", "contracts.json"),
+    JSON.stringify({
+      schemaVersion: "1.0",
+      contractVersion: "8.0",
+      kind: "contract-reference",
+      description: "fixture",
+      authority: {},
+      format: {},
+      contracts: [{
+        id: "C-1.1",
+        title: "fixture",
+        scope: "test",
+        directiveIds: ["E-1.25"],
+        dos: [],
+        donts: [],
+        contract: { purpose: "", inputs: [], outputs: [], errors: [], ordering: [], invariants: [], boundaries: {} },
+        implementation: {},
+        verification: {},
+      }],
+    }),
+  );
   await mkdir(join(root, ".github", "workflows"), { recursive: true });
   await writeFile(
     join(root, ".github", "workflows", "validation.yml"),
